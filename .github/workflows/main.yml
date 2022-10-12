@@ -1,0 +1,27 @@
+name: main
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - run: pip install pre-commit-mirror-maker
+
+      - name: set git config
+        run: |
+          git config user.name 'Github Actions'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - run: pre-commit-mirror --language python --package-name ruff --entry ruff --types python --description "Run ruff to lint Python files." --args='--fix' .
+
+      - run: git push origin HEAD:refs/heads/main --tags
