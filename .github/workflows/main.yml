@@ -22,6 +22,6 @@ jobs:
           git config user.name 'Github Actions'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-      - run: pre-commit-mirror --language python --package-name ruff --entry ruff --types python --description "Run ruff to lint Python files." --args='--fix' .
+      - run: pre-commit-mirror --language python --package-name ruff --entry ruff --id lint --types python --description "Run ruff to lint Python files." .
 
       - run: git push origin HEAD:refs/heads/main --tags
