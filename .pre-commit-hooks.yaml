@@ -1,7 +1,10 @@
-- id: lint
-  name: ruff lint
-  description: Run ruff to lint Python files.
-  entry: ruff
-  language: python
-  types_or: [python]
-  pass_filenames: true
+-   id: ruff
+    name: ruff
+    description: 'Run ruff to lint Python files.'
+    entry: ruff
+    language: python
+    'types': [python]
+    args: ["--fix"]
+    require_serial: false
+    additional_dependencies: []
+    minimum_pre_commit_version: '0'
