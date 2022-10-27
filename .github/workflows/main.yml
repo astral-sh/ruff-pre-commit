@@ -30,15 +30,5 @@ jobs:
             --id ruff
             --types python
             --description "Run `ruff` for extremely fast Python linting" .
-      
-      # Intended for removal November 2022 (1 month after deprecation)
-      - run: >
-          pre-commit-mirror
-            --language python
-            --package-name ruff
-            --entry ruff
-            --id lint
-            --types python
-            --description "Deprecated: use hook id `ruff` instead. Planned removal 2022-11-30" .
 
       - run: git push origin HEAD:refs/heads/main --tags
