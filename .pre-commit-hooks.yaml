@@ -1,16 +1,6 @@
 -   id: ruff
     name: ruff
-    description: 'Run `ruff` for extremely fast Python linting'
-    entry: ruff
-    language: python
-    'types': [python]
-    args: []
-    require_serial: false
-    additional_dependencies: []
-    minimum_pre_commit_version: '0'
--   id: lint
-    name: ruff
-    description: 'Deprecated: use hook id `ruff` instead. Planned removal 2022-11-30'
+    description: "Run 'ruff' for extremely fast Python linting"
     entry: ruff
     language: python
     'types': [python]
