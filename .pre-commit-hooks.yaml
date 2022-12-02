@@ -5,6 +5,6 @@
   language: python
   types_or: [python, pyi]
   args: []
-  require_serial: false
+  require_serial: true
   additional_dependencies: []
   minimum_pre_commit_version: "0"
