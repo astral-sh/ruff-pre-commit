@@ -3,7 +3,7 @@
   description: "Run 'ruff' for extremely fast Python linting"
   entry: ruff
   language: python
-  "types": [python]
+  types_or: [python, pyi]
   args: []
   require_serial: false
   additional_dependencies: []
