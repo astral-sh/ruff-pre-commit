@@ -11,6 +11,9 @@ jobs:
     name: main
     runs-on: ubuntu-latest
     steps:
+      - if: ${{ startsWith(github.event_name, 'repository_dispatch') }}
+        run: sleep 30
+
       - uses: actions/checkout@v3
 
       - uses: actions/setup-python@v4
