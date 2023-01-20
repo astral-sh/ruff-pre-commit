@@ -19,8 +19,6 @@ Add this to your `.pre-commit-config.yaml`:
   rev: 'v0.0.191'
   hooks:
     - id: ruff
-      # Respect `exclude` and `extend-exclude` settings.
-      args: ["--force-exclude"]
 ```
 
 ## License
