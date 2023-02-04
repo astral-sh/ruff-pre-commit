@@ -16,7 +16,7 @@ Add this to your `.pre-commit-config.yaml`:
 ```yaml
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   # Ruff version.
-  rev: 'v0.0.191'
+  rev: 'v0.0.241'
   hooks:
     - id: ruff
 ```
