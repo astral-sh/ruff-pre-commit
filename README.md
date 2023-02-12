@@ -19,7 +19,10 @@ Add this to your `.pre-commit-config.yaml`:
   rev: 'v0.0.241'
   hooks:
     - id: ruff
+      args: "--fix"
 ```
+
+If you'd rather not auto-fix issues, simply omit the `args: "--fix"` line.
 
 ## License
 
