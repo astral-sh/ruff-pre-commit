@@ -9,7 +9,7 @@ For pre-commit: see https://github.com/pre-commit/pre-commit
 
 For Ruff: see https://github.com/charliermarsh/ruff
 
-### Using ruff with pre-commit
+### Using Ruff with pre-commit
 
 Add this to your `.pre-commit-config.yaml`:
 
