@@ -16,13 +16,21 @@ Add this to your `.pre-commit-config.yaml`:
 ```yaml
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   # Ruff version.
-  rev: 'v0.0.241'
+  rev: 'v0.0.245'
   hooks:
     - id: ruff
-      args: "--fix"
 ```
 
-If you'd rather not auto-fix issues, simply omit the `args: "--fix"` line.
+Or, to enable autofix:
+
+```yaml
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  # Ruff version.
+  rev: 'v0.0.245'
+  hooks:
+    - id: ruff
+      args: [--fix, --exit-non-zero-on-fix]
+```
 
 ## License
 
