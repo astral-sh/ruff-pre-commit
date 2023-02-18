@@ -8,3 +8,4 @@
     require_serial: true
     additional_dependencies: []
     minimum_pre_commit_version: '2.9.2'
+    stages: [commit, merge-commit, push, manual]
