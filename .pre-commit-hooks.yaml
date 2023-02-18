@@ -6,5 +6,4 @@
     'types_or': [python, pyi]
     args: []
     require_serial: true
-    additional_dependencies: []
     minimum_pre_commit_version: '2.9.2'
