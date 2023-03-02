@@ -1,7 +1,7 @@
 -   id: ruff
     name: ruff
     description: "Run 'ruff' for extremely fast Python linting"
-    entry: ruff --force-exclude
+    entry: ruff check --force-exclude
     language: python
     'types_or': [python, pyi]
     args: []
