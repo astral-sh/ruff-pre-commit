@@ -12,7 +12,7 @@ Add this to your `.pre-commit-config.yaml`:
 ```yaml
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   # Ruff version.
-  rev: 'v0.0.260'
+  rev: 'v0.0.261'
   hooks:
     - id: ruff
 ```
@@ -22,7 +22,7 @@ Or, to enable autofix:
 ```yaml
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   # Ruff version.
-  rev: 'v0.0.260'
+  rev: 'v0.0.261'
   hooks:
     - id: ruff
       args: [--fix, --exit-non-zero-on-fix]
