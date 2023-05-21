@@ -10,7 +10,7 @@ Distributed as a standalone repository to enable installing Ruff via prebuilt wh
 Add this to your `.pre-commit-config.yaml`:
 
 ```yaml
-- repo: https://github.com/charliermarsh/ruff-pre-commit
+- repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.0.269
   hooks:
@@ -20,7 +20,7 @@ Add this to your `.pre-commit-config.yaml`:
 Or, to enable autofix:
 
 ```yaml
-- repo: https://github.com/charliermarsh/ruff-pre-commit
+- repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.0.269
   hooks:
