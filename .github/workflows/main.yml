@@ -4,7 +4,7 @@ on:
     - cron: "0 */4 * * *"
   workflow_dispatch:
   repository_dispatch:
-    types: [pypi_release]
+    types: [ pypi_release ]
 
 jobs:
   build:
@@ -30,3 +30,8 @@ jobs:
       - run: pre-commit-mirror --language python --package-name ruff --entry 'ruff check --force-exclude' --id ruff --types-or python --types-or pyi --require-serial --description "Run 'ruff' for extremely fast Python linting" .
 
       - run: git push origin HEAD:refs/heads/main --tags
+
+      - name: "Update version in README.md"
+        run: python update_version.py
+
+      - run: git push origin HEAD:refs/heads/main
