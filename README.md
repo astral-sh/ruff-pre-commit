@@ -1,5 +1,11 @@
 # ruff-pre-commit
 
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![image](https://img.shields.io/pypi/v/0.0.272/ruff.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/l/0.0.272/ruff.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/pyversions/0.0.272/ruff.svg)](https://pypi.python.org/pypi/ruff)
+[![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/CI/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
+
 A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/charliermarsh/ruff).
 
 Distributed as a standalone repository to enable installing Ruff via prebuilt wheels from
@@ -36,3 +42,9 @@ reformatting.
 ## License
 
 MIT
+
+<div align="center">
+  <a target="_blank" href="https://astral.sh" style="background:none">
+    <img src="https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/svg/Astral.svg">
+  </a>
+</div>

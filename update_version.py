@@ -9,9 +9,11 @@ def main():
     readme_md = Path("README.md")
     readme = readme_md.read_text()
     rev = Path(".version").read_text().strip()
-    readme = re.sub("rev: .*", f"rev: v{rev}", readme)
+    readme = re.sub(r"rev: v\d+\.\d+\.\d+", f"rev: v{rev}", readme)
+    readme = re.sub(r"/\d+\.\d+\.\d+/ruff\.svg", f"/{rev}/ruff.svg", readme)
     readme_md.write_text(readme)
-    # Only commit on change
+
+    # Only commit on change.
     # https://stackoverflow.com/a/9393642/3549270
     if check_output(["git", "status", "-s"]).strip():
         check_call(["git", "add", readme_md])
