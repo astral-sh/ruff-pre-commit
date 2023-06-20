@@ -4,7 +4,7 @@
 [![image](https://img.shields.io/pypi/v/0.0.273/ruff.svg)](https://pypi.python.org/pypi/ruff)
 [![image](https://img.shields.io/pypi/l/0.0.273/ruff.svg)](https://pypi.python.org/pypi/ruff)
 [![image](https://img.shields.io/pypi/pyversions/0.0.273/ruff.svg)](https://pypi.python.org/pypi/ruff)
-[![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/CI/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
+[![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/main/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
 
 A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/charliermarsh/ruff).
 
