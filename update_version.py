@@ -10,7 +10,7 @@ def main():
     readme = readme_md.read_text()
     rev = Path(".version").read_text().strip()
     readme = re.sub(r"rev: v\d+\.\d+\.\d+", f"rev: v{rev}", readme)
-    readme = re.sub(r"/\d+\.\d+\.\d+/ruff\.svg", f"/{rev}/ruff.svg", readme)
+    readme = re.sub(r"/ruff/\d+\.\d+\.\d+\.svg", f"/ruff/{rev}.svg", readme)
     readme_md.write_text(readme)
 
     # Only commit on change.
