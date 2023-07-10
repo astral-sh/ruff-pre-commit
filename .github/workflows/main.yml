@@ -27,7 +27,7 @@ jobs:
           git config user.name 'Github Actions'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-      - run: pre-commit-mirror --language python --package-name ruff --entry 'ruff check --force-exclude' --id ruff --types-or python --types-or pyi --types-or jupyter  --types-or toml --require-serial --description "Run 'ruff' for extremely fast Python linting" .
+      - run: pre-commit-mirror --language python --package-name ruff --entry 'ruff check --force-exclude' --id ruff --types-or python --types-or pyi --types-or jupyter --require-serial --description "Run 'ruff' for extremely fast Python linting" .
 
       - run: git push origin HEAD:refs/heads/main --tags
 
