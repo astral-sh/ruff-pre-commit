@@ -34,7 +34,7 @@ Or, to enable autofix:
       args: [--fix, --exit-non-zero-on-fix]
 ```
 
-To run the hook on Jupyter notebooks as well:
+To run the hook on Jupyter Notebooks too:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
