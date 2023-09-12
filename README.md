@@ -61,7 +61,7 @@ reformatting.
     - id: ruff-format
 ```
 
-To check formatting with changing files,  use `--check`:
+To check formatting without changing files, use `--check`:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
