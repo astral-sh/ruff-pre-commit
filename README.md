@@ -52,7 +52,7 @@ reformatting.
 
 ### Using Ruff's formatter (unstable)
 
-Ruff's formatter is in Alpha, but can used with pre-commit by adding the `ruff-format` hook:
+[Ruff's formatter](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/README.md) is in Alpha, but can used with pre-commit by adding the `ruff-format` hook:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
