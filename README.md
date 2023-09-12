@@ -56,7 +56,6 @@ reformatting.
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.289
   hooks:
     - id: ruff-format
 ```
@@ -65,8 +64,6 @@ To check formatting without changing files, use `--check`:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.0.289
   hooks:
     - id: ruff-format
       args: [--check]
