@@ -11,7 +11,7 @@
 - id: ruff-format
   name: ruff-format
   description: "Run 'ruff format' for extremely fast Python formatting"
-  entry: ruff format --check --force-exclude
+  entry: ruff format --force-exclude
   language: python
   "types_or": [python, pyi]
   args: []
