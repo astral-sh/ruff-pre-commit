@@ -50,6 +50,28 @@ _unless_ you enable autofix, in which case, Ruff's pre-commit hook should run _b
 and other formatting tools, as Ruff's autofix behavior can output code changes that require
 reformatting.
 
+### Using Ruff's formatter (unstable)
+
+Ruff's formatter is in Alpha, but can used with pre-commit by adding the `ruff-format` hook:
+
+```yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.0.289
+  hooks:
+    - id: ruff-format
+```
+
+To check formatting with changing files,  use `--check`:
+
+```yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.0.289
+  hooks:
+    - id: ruff-format
+      args: [--check]
+```
+
 ## License
 
 MIT
