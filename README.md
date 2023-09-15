@@ -39,7 +39,7 @@ To run the hook on Jupyter Notebooks too:
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.0.289
+  rev: v0.0.290
   hooks:
     - id: ruff
       types_or: [python, pyi, jupyter]
@@ -56,7 +56,8 @@ reformatting.
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: main
+  # Ruff version.
+  rev: v0.0.290
   hooks:
     - id: ruff-format
 ```
@@ -65,11 +66,14 @@ To check formatting without changing files, use `--check`:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: main
+  # Ruff version.
+  rev: v0.0.290
   hooks:
     - id: ruff-format
       args: [--check]
 ```
+
+Note `v0.0.290` is the minimum version that provides the `ruff-format` hook.
 
 ## License
 
