@@ -73,7 +73,7 @@ To check formatting without changing files, use `--check`:
       args: [--check]
 ```
 
-Note `v0.0.290` is the minimum supported version.
+Note `v0.0.290` is the minimum version that provides the `ruff-format` hook.
 
 ## License
 
