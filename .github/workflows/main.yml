@@ -4,7 +4,7 @@ on:
     - cron: "0 */4 * * *"
   workflow_dispatch:
   repository_dispatch:
-    types: [ pypi_release ]
+    types: [pypi_release]
 
 jobs:
   build:
@@ -14,24 +14,23 @@ jobs:
       - if: ${{ startsWith(github.event_name, 'repository_dispatch') }}
         run: sleep 30
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - run: pip install pre-commit-mirror-maker
+      - run: pip install -r requirements-dev.txt
 
       - name: set git config
         run: |
           git config user.name 'Github Actions'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-      - run: pre-commit-mirror --language python --package-name ruff --entry 'ruff check --force-exclude' --id ruff --types-or python --types-or pyi --require-serial --description "Run 'ruff' for extremely fast Python linting" .
+      - run: python mirror.py
 
-      - run: git push origin HEAD:refs/heads/main --tags
-
-      - name: "Update version in README.md"
-        run: python update_version.py
-
-      - run: git push origin HEAD:refs/heads/main
+      - run: |
+          git push origin HEAD:refs/heads/main
+          git push origin HEAD:refs/heads/main --tags
