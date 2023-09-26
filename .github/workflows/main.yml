@@ -18,9 +18,11 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
 
-      - run: pip install "urllib3>=2" tomli packaging
+      - run: pip install -r requirements-dev.txt
 
       - name: set git config
         run: |

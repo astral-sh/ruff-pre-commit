@@ -3,7 +3,7 @@ import subprocess
 import typing
 from pathlib import Path
 
-import tomli
+import tomllib
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -11,7 +11,7 @@ from packaging.version import Version
 
 def main():
     with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
-        pyproject = tomli.load(f)
+        pyproject = tomllib.load(f)
 
     all_versions = get_all_versions()
     current_version = get_current_version(pyproject=pyproject)
@@ -19,9 +19,12 @@ def main():
 
     for version in target_versions:
         paths = process_version(version)
-        subprocess.run(["git", "add", *paths])
-        subprocess.run(["git", "commit", "-m", f"Mirror: {version}"])
-        subprocess.run(["git", "tag", f"v{version}"])
+        if subprocess.check_output(["git", "status", "-s"]).strip():
+            subprocess.run(["git", "add", *paths])
+            subprocess.run(["git", "commit", "-m", f"Mirror: {version}"])
+            subprocess.run(["git", "tag", f"v{version}"])
+        else:
+            print(f"No change v{version}")
 
 
 def get_all_versions() -> typing.List[Version]:
@@ -36,10 +39,12 @@ def get_all_versions() -> typing.List[Version]:
 def get_current_version(pyproject: dict) -> Version:
     requirements = [Requirement(d) for d in pyproject["project"]["dependencies"]]
     requirement = next((r for r in requirements if r.name == "ruff"), None)
-    assert requirement is not None
+    assert requirement is not None, "pyproject.toml does not have ruff requirement"
 
     specifiers = list(requirement.specifier)
-    assert len(specifiers) == 1 and specifiers[0].operator == "=="
+    assert (
+        len(specifiers) == 1 and specifiers[0].operator == "=="
+    ), f"ruff's specifier should be exact matching, but `{requirement}`"
 
     return Version(specifiers[0].version)
 
