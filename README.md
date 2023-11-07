@@ -13,67 +13,59 @@ Distributed as a standalone repository to enable installing Ruff via prebuilt wh
 
 ### Using Ruff with pre-commit
 
-Add this to your `.pre-commit-config.yaml`:
+To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https://docs.astral.sh/ruff/formatter)
+(available as of Ruff v0.0.289) via pre-commit, add the following to your `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.1.4
   hooks:
+    # Run the linter.
     - id: ruff
-```
-
-Or, to enable autofix:
-
-```yaml
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.1.4
-  hooks:
-    - id: ruff
-      args: [--fix, --exit-non-zero-on-fix]
-```
-
-To run the hook on Jupyter Notebooks too:
-
-```yaml
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.1.4
-  hooks:
-    - id: ruff
-      types_or: [python, pyi, jupyter]
-```
-
-Ruff's pre-commit hook should be placed after other formatting tools, such as Black and isort,
-_unless_ you enable autofix, in which case, Ruff's pre-commit hook should run _before_ Black, isort,
-and other formatting tools, as Ruff's autofix behavior can output code changes that require
-reformatting.
-
-### Using Ruff's formatter (unstable)
-
-[Ruff's formatter](https://docs.astral.sh/ruff/formatter) can used with pre-commit by adding the `ruff-format` hook:
-
-```yaml
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.1.4
-  hooks:
+    # Run the formatter.
     - id: ruff-format
 ```
 
-To check formatting without changing files, use `--check`:
+To enable lint fixes, add the `--fix` argument to the lint hook:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.1.4
   hooks:
+    # Run the linter.
+    - id: ruff
+      args: [ --fix ]
+    # Run the formatter.
     - id: ruff-format
-      args: [--check]
 ```
 
-Note `v0.0.290` is the minimum version that provides the `ruff-format` hook.
+To run the hooks over Jupyter Notebooks too, add `jupyter` to the list of allowed filetypes:
+
+```yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.1.4
+  hooks:
+    # Run the linter.
+    - id: ruff
+      types_or: [ python, pyi, jupyter ]
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter ]
+```
+
+When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
+_before_ Black, isort, and other formatting tools, as Ruff's fix behavior can output code changes
+that require reformatting.
+
+When running without `--fix`, Ruff's formatter hook can be placed before or after Ruff's lint hook.
+
+(As long as your Ruff configuration avoids any [linter-formatter incompatibilities](https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules),
+`ruff format` should never introduce new lint errors, so it's safe to run Ruff's format hook _after_
+`ruff check --fix`.)
 
 ## License
 
