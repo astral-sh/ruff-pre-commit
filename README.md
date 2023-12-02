@@ -41,6 +41,21 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
     - id: ruff-format
 ```
 
+Please note that `pre-commit` passes all changed files to its hooks explicitly.
+`ruff` will also lint/format *any paths passed in directly*, even if they're excluded in your config file (e.g. `pyproject.toml`).
+Therefore, to force `ruff` honor your [exclude](https://docs.astral.sh/ruff/settings/#exclude)/[extend-exclude](https://docs.astral.sh/ruff/settings/#extend-exclude)
+setting, add [--force-exclude](https://docs.astral.sh/ruff/settings/#force-exclude) argument to the hooks:
+
+```yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.6
+  hooks:
+    - id: ruff
+      args: [ --fix, --force-exclude ]
+    - id: ruff-format
+      args: [ --force-exclude ]
+```
+
 To run the hooks over Jupyter Notebooks too, add `jupyter` to the list of allowed filetypes:
 
 ```yaml
