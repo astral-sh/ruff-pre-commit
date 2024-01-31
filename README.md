@@ -21,10 +21,10 @@ To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https
   # Ruff version.
   rev: v0.1.15
   hooks:
-    # Run the linter.
-    - id: ruff
     # Run the formatter.
     - id: ruff-format
+    # Run the linter.
+    - id: ruff
 ```
 
 To enable lint fixes, add the `--fix` argument to the lint hook:
@@ -34,11 +34,11 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
   # Ruff version.
   rev: v0.1.15
   hooks:
+    # Run the formatter.
+    - id: ruff-format
     # Run the linter.
     - id: ruff
       args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
 ```
 
 To run the hooks over Jupyter Notebooks too, add `jupyter` to the list of allowed filetypes:
@@ -48,13 +48,13 @@ To run the hooks over Jupyter Notebooks too, add `jupyter` to the list of allowe
   # Ruff version.
   rev: v0.1.15
   hooks:
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter ]
     # Run the linter.
     - id: ruff
       types_or: [ python, pyi, jupyter ]
       args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi, jupyter ]
 ```
 
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
