@@ -19,3 +19,13 @@
   require_serial: true
   additional_dependencies: []
   minimum_pre_commit_version: "2.9.2"
+
+- id: pip-compile
+  name: pip-compile
+  description: Automatically compile requirements.
+  entry: uv pip compile
+  language: python
+  files: ^requirements\.(in|txt)$
+  pass_filenames: false
+  additional_dependencies: ['uv']
+  minimum_pre_commit_version: "2.9.2"
