@@ -67,6 +67,13 @@ When running without `--fix`, Ruff's formatter hook can be placed before or afte
 `ruff format` should never introduce new lint errors, so it's safe to run Ruff's format hook _after_
 `ruff check --fix`.)
 
+> [!IMPORTANT]  
+> By default this hook runs with the `--force-exclude` argument. This means that any excludes
+> defined in `pyproject.toml` or `ruff.toml` will be excluded even when explicitly passed in via the
+> CI runner,  This can cause differences between how `ruff check` behaves locally and inside
+> of CI. See the documentation for [exclude](https://docs.astral.sh/ruff/settings/#exclude) and
+> [force-exclude](https://docs.astral.sh/ruff/settings/#force-exclude) for further details.
+
 ## License
 
 MIT
