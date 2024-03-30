@@ -1,9 +1,9 @@
 import re
 import subprocess
+import tomllib
 import typing
 from pathlib import Path
 
-import tomllib
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -20,14 +20,14 @@ def main():
     for version in target_versions:
         paths = process_version(version)
         if subprocess.check_output(["git", "status", "-s"]).strip():
-            subprocess.run(["git", "add", *paths])
-            subprocess.run(["git", "commit", "-m", f"Mirror: {version}"])
-            subprocess.run(["git", "tag", f"v{version}"])
+            subprocess.run(["git", "add", *paths], check=True)
+            subprocess.run(["git", "commit", "-m", f"Mirror: {version}"], check=True)
+            subprocess.run(["git", "tag", f"v{version}"], check=True)
         else:
             print(f"No change v{version}")
 
 
-def get_all_versions() -> typing.List[Version]:
+def get_all_versions() -> list[Version]:
     response = urllib3.request("GET", "https://pypi.org/pypi/ruff/json")
     if response.status != 200:
         raise RuntimeError("Failed to fetch versions from pypi")
