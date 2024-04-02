@@ -8,6 +8,5 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "packaging~=23.1",
-    "uv>=0.1.24",
     "urllib3>=2.0.5,<3.0.0",
 ]
