@@ -19,3 +19,14 @@
   require_serial: true
   additional_dependencies: []
   minimum_pre_commit_version: "2.9.2"
+
+- id: ruff-docs
+  name: ruff-docs
+  description: "Run 'ruff' to format docstrings, and codesnippets in your docs"
+  entry: ruff format --force-exclude --config format.docstring-code-format=true
+  language: python
+  types_or: [python, pyi, markdown, rst]
+  args: []
+  require_serial: true
+  additional_dependencies: []
+  minimum_pre_commit_version: "2.9.2"
