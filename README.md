@@ -67,6 +67,28 @@ When running without `--fix`, Ruff's formatter hook can be placed before or afte
 `ruff format` should never introduce new lint errors, so it's safe to run Ruff's format hook _after_
 `ruff check --fix`.)
 
+Since ruff format can be [used to format documentation](https://docs.astral.sh/ruff/formatter/#docstring-formatting) (codesnippets in your docs, docstrings in your code) you can use it via `ruff-docs`. You can optionally set a line-length:
+
+
+```yaml
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.4.5
+  hooks:
+    # Run the linter.
+    - id: ruff
+      types_or: [ python, pyi, jupyter ]
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter ]
+    # Format docs(trings)
+    - id: ruff-docs
+      types_or: [ python, pyi, jupyter, markdown, rst ]
+      args: [ --config, format.docstring-code-line-length=72 ]
+```
+
+
 ## License
 
 ruff-pre-commit is licensed under either of
