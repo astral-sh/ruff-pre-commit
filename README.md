@@ -41,7 +41,7 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
     - id: ruff-format
 ```
 
-To avoid running on Jupyter Notebooks too, remove `jupyter` from the list of allowed filetypes:
+To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
 
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
