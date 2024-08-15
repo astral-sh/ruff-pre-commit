@@ -3,7 +3,7 @@
   description: "Run 'ruff' for extremely fast Python linting"
   entry: ruff check --force-exclude
   language: python
-  types_or: [python, pyi]
+  types_or: [python, pyi, jupyter]
   args: []
   require_serial: true
   additional_dependencies: []
@@ -14,7 +14,7 @@
   description: "Run 'ruff format' for extremely fast Python formatting"
   entry: ruff format --force-exclude
   language: python
-  types_or: [python, pyi]
+  types_or: [python, pyi, jupyter]
   args: []
   require_serial: true
   additional_dependencies: []
