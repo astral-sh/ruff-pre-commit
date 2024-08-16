@@ -2,7 +2,7 @@
 name = "ruff-pre-commit"
 version = "0.0.0"
 dependencies = [
-    "ruff==0.6.0",
+    "ruff==0.6.1",
 ]
 
 [project.optional-dependencies]
