@@ -1,9 +1,9 @@
 # ruff-pre-commit
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![image](https://img.shields.io/pypi/v/ruff/0.6.2.svg)](https://pypi.python.org/pypi/ruff)
-[![image](https://img.shields.io/pypi/l/ruff/0.6.2.svg)](https://pypi.python.org/pypi/ruff)
-[![image](https://img.shields.io/pypi/pyversions/ruff/0.6.2.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/v/ruff/0.6.3.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/l/ruff/0.6.3.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/pyversions/ruff/0.6.3.svg)](https://pypi.python.org/pypi/ruff)
 [![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/main/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
 
 A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/astral-sh/ruff).
@@ -19,7 +19,7 @@ To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.6.2
+  rev: v0.6.3
   hooks:
     # Run the linter.
     - id: ruff
@@ -32,7 +32,7 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.6.2
+  rev: v0.6.3
   hooks:
     # Run the linter.
     - id: ruff
@@ -46,7 +46,7 @@ To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed
 ```yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.6.2
+  rev: v0.6.3
   hooks:
     # Run the linter.
     - id: ruff
