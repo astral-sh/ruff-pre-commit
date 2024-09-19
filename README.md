@@ -17,6 +17,7 @@ To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https
 (available as of Ruff v0.0.289) via pre-commit, add the following to your `.pre-commit-config.yaml`:
 
 ```yaml
+repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.6.5
@@ -30,6 +31,7 @@ To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https
 To enable lint fixes, add the `--fix` argument to the lint hook:
 
 ```yaml
+repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.6.5
@@ -44,6 +46,7 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
 
 ```yaml
+repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
   rev: v0.6.5
