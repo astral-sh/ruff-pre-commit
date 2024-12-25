@@ -19,3 +19,10 @@
   require_serial: true
   additional_dependencies: []
   minimum_pre_commit_version: "2.9.2"
+
+- id: ruffen-docs
+  name: ruffen-docs
+  description: Run the Ruff formatter on python code blocks in documentation files
+  entry: ruffen-docs
+  language: python
+  types: [markdown]
