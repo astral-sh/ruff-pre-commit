@@ -1,16 +1,26 @@
+"""Update the project to the latest version of ruff."""
+
+# ruff: noqa: S603, S607, PT018
+
+from __future__ import annotations
+
 import re
 import subprocess
 import tomllib
 from pathlib import Path
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 
 def main() -> None:
-    with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
+    """Update the project to the latest version of ruff."""
+    with (Path(__file__).parent / "pyproject.toml").open("rb") as f:
         pyproject = tomllib.load(f)
 
     all_versions = get_all_versions()
@@ -28,15 +38,18 @@ def main() -> None:
 
 
 def get_all_versions() -> list[Version]:
+    """Fetch all versions of ruff from pypi."""
     response = urllib3.request("GET", "https://pypi.org/pypi/ruff/json")
     if response.status != 200:
-        raise RuntimeError("Failed to fetch versions from pypi")
+        msg = "Failed to fetch versions from pypi"
+        raise RuntimeError(msg)
 
     versions = [Version(release) for release in response.json()["releases"]]
     return sorted(versions)
 
 
 def get_current_version(pyproject: dict[str, Any]) -> Version:
+    """Get the current version of ruff from pyproject.toml."""
     requirements = [Requirement(d) for d in pyproject["project"]["dependencies"]]
     requirement = next((r for r in requirements if r.name == "ruff"), None)
     assert requirement is not None, "pyproject.toml does not have ruff requirement"
@@ -50,6 +63,8 @@ def get_current_version(pyproject: dict[str, Any]) -> Version:
 
 
 def process_version(version: Version) -> Sequence[str]:
+    """Update the project to the given version of ruff."""
+
     def replace_pyproject_toml(content: str) -> str:
         return re.sub(r'"ruff==.*"', f'"ruff=={version}"', content)
 
@@ -58,17 +73,16 @@ def process_version(version: Version) -> Sequence[str]:
         return re.sub(r"/ruff/\d+\.\d+\.\d+\.svg", f"/ruff/{version}.svg", content)
 
     paths = {
-        "pyproject.toml": replace_pyproject_toml,
-        "README.md": replace_readme_md,
+        Path("pyproject.toml"): replace_pyproject_toml,
+        Path("README.md"): replace_readme_md,
     }
 
     for path, replacer in paths.items():
-        with open(path) as f:
-            content = replacer(f.read())
-        with open(path, mode="w") as f:
-            f.write(content)
+        content = path.read_text()
+        updated_content = replacer(content)
+        path.write_text(updated_content)
 
-    return tuple(paths.keys())
+    return tuple([str(path) for path in paths])
 
 
 if __name__ == "__main__":

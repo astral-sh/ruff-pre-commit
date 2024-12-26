@@ -60,3 +60,59 @@ filterwarnings = [
 python_files = "test_*.py"
 testpaths = ["tests"]
 xfail_strict = true
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+ignore = [
+  "D106", # Requiring doc strings in subclasses results in duplicated doc strings
+  "D401", # Ignore non-imperative mood in the first line of a doc string
+  "FBT", # Ignore flake8-boolean-trap - Allow boolean default values
+  "FIX002", # Items to be fixed should be marked as TODO
+  "ISC001", # This is handled by the formatter  # "COM812",  # Note we are intentionally not disabling this rule to keep trailing commas being added
+  "PLR0913", # Ignore too many arguments passed to a function
+  "PLR2004", # Ignore magic value comparison
+  "RUF012", # Ignore mutable class defaults check
+  "S101", # Ignore assert statements
+  "SIM108", # Don't suggest simplifying if statements as we can't check branch coverage
+  "T201", # Allow print statements
+  "TD002", # Don't require assignee for TODOs
+  "TRY003",
+]
+select = ["ALL"] # Enable all ruff plugins
+unfixable = [
+  "ERA001", # Disable autofix for commented-out code
+  "F401", # Disable autofix for unused imports
+  "F841", # Disable autofix for unused variables
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"mock".msg = "Use unittest.mock."
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/*.ipynb" = [
+  "D100", # Remove requirement for module level docstrings within notebooks
+  "T201", # Allow print within notebooks
+  "T203", # Allow pprint within notebooks
+]
+"*/tests/*" = [
+  "PLC1901", # Ignore rule as we want to assert strings are empty in tests
+  "S", # Ignore all bandit security related checks for tests
+]
+"__init__.py" = [
+  "D104", # Ignore - "Missing docstring in public package" for init files
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

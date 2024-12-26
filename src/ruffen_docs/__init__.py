@@ -6,11 +6,12 @@ import re
 import subprocess
 import textwrap
 from bisect import bisect
-from collections.abc import Generator
-from collections.abc import Sequence
+from pathlib import Path
 from re import Match
+from typing import TYPE_CHECKING, NamedTuple
 
-from black.mode import TargetVersion  # type: ignore[import-not-found]
+if TYPE_CHECKING:
+    from collections.abc import Generator, Sequence
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
@@ -99,23 +100,19 @@ ON_OFF_COMMENT_RE = re.compile(
 )
 
 
-class InvalidInput(ValueError):
+class InvalidInputError(ValueError):
     """Raised when ruff fails to parse file."""
 
 
-def format_str(code: str, configs: list[str]) -> str:
+def format_str(code: str, config: FormatterConfig) -> str:
     """Format a code block with ruff."""
-    config_args = []
-    for config in configs:
-        config_args.extend(["--config", config])
-
-    subprocess_result = subprocess.run(
-        [
+    subprocess_result = subprocess.run(  # noqa: S603
+        [  # noqa: S607
             "ruff",
             "format",
             "--stdin-filename",
             "file.py",
-            *config_args,
+            *config.call_args,
             "-",
         ],
         check=True,
@@ -128,16 +125,20 @@ def format_str(code: str, configs: list[str]) -> str:
 
 
 class CodeBlockError:
+    """An error that occurred while formatting a code block."""
+
     def __init__(self, offset: int, exc: Exception) -> None:
+        """Initialize a CodeBlockError."""
         self.offset = offset
         self.exc = exc
 
 
-def format_file_contents(
+def format_file_contents(  # noqa: C901, PLR0915
     src: str,
-    configs: list[str],
+    config: FormatterConfig,
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
+    """Format all code blocks in a file."""
     errors: list[CodeBlockError] = []
 
     off_ranges = []
@@ -147,10 +148,10 @@ def format_file_contents(
         if "off" in comment.groups():
             if off_start is None:
                 off_start = comment.start()
-        else:
-            if off_start is not None:
-                off_ranges.append((off_start, comment.end()))
-                off_start = None
+        elif off_start is not None:
+            off_ranges.append((off_start, comment.end()))
+            off_start = None
+
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
@@ -167,7 +168,7 @@ def format_file_contents(
     def _collect_error(match: Match[str]) -> Generator[None]:
         try:
             yield
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
@@ -175,7 +176,7 @@ def format_file_contents(
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, configs)
+            code = format_str(code, config)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -193,7 +194,7 @@ def format_file_contents(
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, configs)
+            code = format_str(code, config)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -208,7 +209,7 @@ def format_file_contents(
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, configs)
+            code = format_str(code, config)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -222,7 +223,7 @@ def format_file_contents(
 
             if fragment is not None:
                 with _collect_error(match):
-                    fragment = format_str(fragment, configs)
+                    fragment = format_str(fragment, config)
                 fragment_lines = fragment.splitlines()
                 code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
                 for line in fragment_lines[1:]:
@@ -242,7 +243,8 @@ def format_file_contents(
 
         indentation: int | None = None
         for line in match["code"].splitlines():
-            orig_line, line = line, line.lstrip()
+            orig_line = line
+            line = line.lstrip()  # noqa: PLW2901
             if indentation is None and line:
                 indentation = len(orig_line) - len(line)
             continuation_match = PYCON_CONTINUATION_RE.match(line)
@@ -279,7 +281,7 @@ def format_file_contents(
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, configs)
+            code = format_str(code, config)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -306,46 +308,70 @@ def format_file_contents(
 
 
 def format_file(
-    filename: str,
+    file: Path,
     skip_errors: bool,
     rst_literal_blocks: bool,
     check_only: bool,
-    configs: list[str],
+    config: FormatterConfig,
 ) -> int:
-    with open(filename, encoding="UTF-8") as f:
+    """Format a file with ruff."""
+    with file.open(encoding="UTF-8") as f:
         contents = f.read()
     new_contents, errors = format_file_contents(
         contents,
-        configs=configs,
+        config=config,
         rst_literal_blocks=rst_literal_blocks,
     )
     for error in errors:
         lineno = contents[: error.offset].count("\n") + 1
-        print(f"{filename}:{lineno}: code block parse error {error.exc}")
+        print(f"{file}:{lineno}: code block parse error {error.exc}")
     if errors and not skip_errors:
         return 2
     if contents == new_contents:
         return 0
     if check_only:
-        print(f"{filename}: Requires a rewrite.")
+        print(f"{file}: Requires a rewrite.")
         return 1
-    print(f"{filename}: Rewriting...")
-    with open(filename, "w", encoding="UTF-8") as f:
+
+    print(f"{file}: Rewriting...")
+    with file.open("w", encoding="UTF-8") as f:
         f.write(new_contents)
     return 1
 
 
+class FormatterConfig(NamedTuple):
+    """Configuration for Ruff formatter."""
+
+    target_version: str
+    preview: bool
+    configs: list[str]
+
+    @property
+    def call_args(self) -> list[str]:
+        """Construct the call arguments for ruff's formatter."""
+        args = ["--target-version", self.target_version]
+        if self.preview:
+            args.append("--preview")
+
+        for config in self.configs:
+            args.extend(["--config", config])
+
+        return args
+
+
 def main(argv: Sequence[str] | None = None) -> int:
+    """CLI entry-point for ruffen_docs."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--preview", action="store_true")
     parser.add_argument(
         "-t",
         "--target-version",
-        action="append",
-        type=lambda v: TargetVersion[v.upper()],
-        default=[],
-        help=f"choices: {[v.name.lower() for v in TargetVersion]}",
-        dest="target_versions",
+        action="store",
+        help=(
+            "The minimum Python version that should be supported. Possible values: "
+            "py37, py38, py39, py310, py311, py312, py313. Default: py39"
+        ),
+        default="py39",
     )
     parser.add_argument("--check", action="store_true")
     parser.add_argument("-E", "--skip-errors", action="store_true")
@@ -353,7 +379,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--rst-literal-blocks",
         action="store_true",
     )
-    parser.add_argument("--pyi", action="store_true")
     parser.add_argument(
         "--config",
         action="append",
@@ -364,13 +389,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
 
+    config = FormatterConfig(
+        target_version=args.target_version,
+        preview=args.preview,
+        configs=args.configs,
+    )
+
     retv = 0
     for filename in args.filenames:
         retv |= format_file(
-            filename,
+            Path(filename),
             skip_errors=args.skip_errors,
             rst_literal_blocks=args.rst_literal_blocks,
             check_only=args.check,
-            configs=args.configs,
+            config=config,
         )
     return retv
