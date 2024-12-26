@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 
-def main() -> None:
+def main() -> int:
     """Update the project to the latest version of ruff."""
     with (Path(__file__).parent / "pyproject.toml").open("rb") as f:
         pyproject = tomllib.load(f)
@@ -41,6 +41,8 @@ def main() -> None:
             subprocess.run(["git", "tag", f"v{version}"], check=True)
         else:
             print(f"No change v{version}")
+
+    return 0
 
 
 def get_all_versions() -> list[Version]:
@@ -92,4 +94,4 @@ def process_version(version: Version) -> Sequence[str]:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
