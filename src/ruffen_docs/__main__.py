@@ -1,3 +1,5 @@
+"""Entrypoint for ruffen-docs."""
+
 from __future__ import annotations
 
 from ruffen_docs import main
