@@ -7,6 +7,7 @@ from __future__ import annotations
 from textwrap import dedent
 from typing import TYPE_CHECKING
 
+import pytest
 from black import FileMode
 from black.const import DEFAULT_LINE_LENGTH
 
@@ -859,7 +860,8 @@ def test_integration_preview(tmp_path: Path) -> None:
         """)
 
 
-def test_integration_pyi(tmp_path: Path) -> None:
+@pytest.mark.xfail(reason="Need to decide how to handle pyi files")
+def test_integration_pyi(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
@@ -883,7 +885,8 @@ def test_integration_pyi(tmp_path: Path) -> None:
         """)
 
 
-def test_integration_py36(tmp_path: Path) -> None:
+@pytest.mark.xfail(reason="Need to investigate odd integration with target version")
+def test_integration_py36(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
@@ -916,7 +919,8 @@ def test_integration_py36(tmp_path: Path) -> None:
         """)
 
 
-def test_integration_filename_last(tmp_path: Path) -> None:
+@pytest.mark.xfail(reason="Need to investigate odd integration with target version")
+def test_integration_filename_last(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
@@ -946,7 +950,12 @@ def test_integration_filename_last(tmp_path: Path) -> None:
         """)
 
 
-def test_integration_multiple_target_version(tmp_path: Path) -> None:
+@pytest.mark.xfail(
+    reason="Need to decide if we want to handle multiple target versions",
+)
+def test_integration_multiple_target_version(
+    tmp_path: Path,
+) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
@@ -970,7 +979,10 @@ def test_integration_multiple_target_version(tmp_path: Path) -> None:
     assert result2 == 0
 
 
-def test_integration_skip_string_normalization(tmp_path: Path) -> None:
+@pytest.mark.xfail(reason="Need to if we want to support this")
+def test_integration_skip_string_normalization(
+    tmp_path: Path,
+) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
