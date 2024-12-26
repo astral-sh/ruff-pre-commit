@@ -10,7 +10,7 @@ from collections.abc import Generator
 from collections.abc import Sequence
 from re import Match
 
-from black.mode import TargetVersion
+from black.mode import TargetVersion  # type: ignore[import-not-found]
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"

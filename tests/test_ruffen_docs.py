@@ -1,18 +1,20 @@
 from __future__ import annotations
 
+from pathlib import Path
 from textwrap import dedent
 
 import pytest
+from _pytest.capture import CaptureFixture
 
-from src.ruffen_docs import format_file_contents, main
+from ruffen_docs import format_file_contents, main
 
 
-def test_format_src_trivial():
+def test_format_src_trivial() -> None:
     after, _ = format_file_contents("", [])
     assert after == ""
 
 
-def test_format_src_markdown_simple():
+def test_format_src_markdown_simple() -> None:
     before = dedent(
         """\
         ```python
@@ -30,7 +32,7 @@ def test_format_src_markdown_simple():
     )
 
 
-def test_format_src_markdown_leading_whitespace():
+def test_format_src_markdown_leading_whitespace() -> None:
     before = dedent(
         """\
         ```   python
@@ -48,7 +50,7 @@ def test_format_src_markdown_leading_whitespace():
     )
 
 
-def test_format_src_markdown_python_after_newline():
+def test_format_src_markdown_python_after_newline() -> None:
     before = dedent(
         """\
         ```
@@ -62,7 +64,7 @@ def test_format_src_markdown_python_after_newline():
     assert after == before
 
 
-def test_format_src_markdown_short_name():
+def test_format_src_markdown_short_name() -> None:
     before = dedent(
         """\
         ```   py
@@ -80,7 +82,7 @@ def test_format_src_markdown_short_name():
     )
 
 
-def test_format_src_markdown_options():
+def test_format_src_markdown_options() -> None:
     before = dedent(
         """\
         ```python title='example.py'
@@ -98,7 +100,7 @@ def test_format_src_markdown_options():
     )
 
 
-def test_format_src_markdown_trailing_whitespace():
+def test_format_src_markdown_trailing_whitespace() -> None:
     before = dedent(
         """\
         ```python
@@ -114,7 +116,7 @@ def test_format_src_markdown_trailing_whitespace():
     )
 
 
-def test_format_src_indented_markdown():
+def test_format_src_indented_markdown() -> None:
     before = dedent(
         """\
         - do this pls:
@@ -136,7 +138,7 @@ def test_format_src_indented_markdown():
     )
 
 
-def test_format_src_markdown_pycon():
+def test_format_src_markdown_pycon() -> None:
     before = (
         "hello\n"
         "\n"
@@ -153,7 +155,7 @@ def test_format_src_markdown_pycon():
     )
 
 
-def test_format_src_markdown_pycon_after_newline():
+def test_format_src_markdown_pycon_after_newline() -> None:
     before = dedent(
         """\
         ```
@@ -167,7 +169,7 @@ def test_format_src_markdown_pycon_after_newline():
     assert after == before
 
 
-def test_format_src_markdown_pycon_options():
+def test_format_src_markdown_pycon_options() -> None:
     before = (
         "hello\n"
         "\n"
@@ -191,7 +193,7 @@ def test_format_src_markdown_pycon_options():
     )
 
 
-def test_format_src_markdown_pycon_twice():
+def test_format_src_markdown_pycon_twice() -> None:
     before = (
         "```pycon\n"
         ">>> f(1,2,3)\n"
@@ -217,7 +219,7 @@ def test_format_src_markdown_pycon_twice():
     )
 
 
-def test_format_src_markdown_comments_disable():
+def test_format_src_markdown_comments_disable() -> None:
     before = (
         "<!-- blacken-docs:off -->\n"
         "```python\n"
@@ -229,7 +231,7 @@ def test_format_src_markdown_comments_disable():
     assert after == before
 
 
-def test_format_src_markdown_comments_disabled_enabled():
+def test_format_src_markdown_comments_disabled_enabled() -> None:
     before = (
         "<!-- blacken-docs:off -->\n"
         "```python\n"
@@ -253,7 +255,7 @@ def test_format_src_markdown_comments_disabled_enabled():
     )
 
 
-def test_format_src_markdown_comments_before():
+def test_format_src_markdown_comments_before() -> None:
     before = (
         "<!-- blacken-docs:off -->\n"
         "<!-- blacken-docs:on -->\n"
@@ -271,7 +273,7 @@ def test_format_src_markdown_comments_before():
     )
 
 
-def test_format_src_markdown_comments_after():
+def test_format_src_markdown_comments_after() -> None:
     before = (
         "```python\n"
         "'double quotes rock'\n"
@@ -289,7 +291,7 @@ def test_format_src_markdown_comments_after():
     )
 
 
-def test_format_src_markdown_comments_only_on():
+def test_format_src_markdown_comments_only_on() -> None:
     # fmt: off
     before = (
         "<!-- blacken-docs:on -->\n"
@@ -307,7 +309,7 @@ def test_format_src_markdown_comments_only_on():
     # fmt: on
 
 
-def test_format_src_markdown_comments_only_off():
+def test_format_src_markdown_comments_only_off() -> None:
     # fmt: off
     before = (
         "<!-- blacken-docs:off -->\n"
@@ -320,7 +322,7 @@ def test_format_src_markdown_comments_only_off():
     assert after == before
 
 
-def test_format_src_markdown_comments_multiple():
+def test_format_src_markdown_comments_multiple() -> None:
     before = (
         "<!-- blacken-docs:on -->\n"  # ignored
         "<!-- blacken-docs:off -->\n"
@@ -336,7 +338,7 @@ def test_format_src_markdown_comments_multiple():
     assert after == before
 
 
-def test_on_off_comments_in_code_blocks():
+def test_on_off_comments_in_code_blocks() -> None:
     before = (
         "````md\n"
         "<!-- blacken-docs:off -->\n"
@@ -350,7 +352,7 @@ def test_on_off_comments_in_code_blocks():
     assert after == before
 
 
-def test_format_src_markdown_comments_disable_pycon():
+def test_format_src_markdown_comments_disable_pycon() -> None:
     before = (
         "<!-- blacken-docs:off -->\n"
         "```pycon\n"
@@ -362,7 +364,7 @@ def test_format_src_markdown_comments_disable_pycon():
     assert after == before
 
 
-def test_format_src_latex_minted():
+def test_format_src_latex_minted() -> None:
     before = (
         "hello\n" "\\begin{minted}{python}\n" "f(1,2,3)\n" "\\end{minted}\n" "world!"
     )
@@ -372,7 +374,7 @@ def test_format_src_latex_minted():
     )
 
 
-def test_format_src_latex_minted_opt():
+def test_format_src_latex_minted_opt() -> None:
     before = (
         "maths!\n"
         "\\begin{minted}[mathescape]{python}\n"
@@ -396,7 +398,7 @@ def test_format_src_latex_minted_opt():
     )
 
 
-def test_format_src_latex_minted_indented():
+def test_format_src_latex_minted_indented() -> None:
     # Personally I would have minted python code all flush left,
     # with only the Python code's own four space indentation:
     before = dedent(
@@ -422,7 +424,7 @@ def test_format_src_latex_minted_indented():
     )
 
 
-def test_format_src_latex_minted_pycon():
+def test_format_src_latex_minted_pycon() -> None:
     before = (
         "Preceding text\n"
         "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
@@ -442,7 +444,7 @@ def test_format_src_latex_minted_pycon():
     )
 
 
-def test_format_src_latex_minted_pycon_indented():
+def test_format_src_latex_minted_pycon_indented() -> None:
     # Nicer style to put the \begin and \end on new lines,
     # but not actually required for the begin line
     before = (
@@ -464,7 +466,7 @@ def test_format_src_latex_minted_pycon_indented():
     )
 
 
-def test_format_src_latex_minted_comments_off():
+def test_format_src_latex_minted_comments_off() -> None:
     before = (
         "% blacken-docs:off\n"
         "\\begin{minted}{python}\n"
@@ -476,7 +478,7 @@ def test_format_src_latex_minted_comments_off():
     assert after == before
 
 
-def test_format_src_latex_minted_comments_off_pycon():
+def test_format_src_latex_minted_comments_off_pycon() -> None:
     before = (
         "% blacken-docs:off\n"
         "\\begin{minted}{pycon}\n"
@@ -488,7 +490,7 @@ def test_format_src_latex_minted_comments_off_pycon():
     assert after == before
 
 
-def test_format_src_pythontex():
+def test_format_src_pythontex() -> None:
     # fmt: off
     before = (
         "hello\n"
@@ -508,7 +510,7 @@ def test_format_src_pythontex():
     # fmt: on
 
 
-def test_format_src_pythontex_comments_off():
+def test_format_src_pythontex_comments_off() -> None:
     before = (
         "% blacken-docs:off\n"
         "\\begin{pyblock}\n"
@@ -520,7 +522,7 @@ def test_format_src_pythontex_comments_off():
     assert after == before
 
 
-def test_format_src_rst():
+def test_format_src_rst() -> None:
     before = (
         "hello\n" "\n" ".. code-block:: python\n" "\n" "    f(1,2,3)\n" "\n" "world\n"
     )
@@ -530,13 +532,13 @@ def test_format_src_rst():
     )
 
 
-def test_format_src_rst_empty():
+def test_format_src_rst_empty() -> None:
     before = "some text\n\n.. code-block:: python\n\n\nsome other text\n"
     after, _ = format_file_contents(before, [])
     assert after == before
 
 
-def test_format_src_rst_literal_blocks():
+def test_format_src_rst_literal_blocks() -> None:
     before = dedent(
         """\
         hello::
@@ -562,7 +564,7 @@ def test_format_src_rst_literal_blocks():
     )
 
 
-def test_format_src_rst_literal_block_empty():
+def test_format_src_rst_literal_block_empty() -> None:
     before = dedent(
         """\
         hello::
@@ -577,7 +579,7 @@ def test_format_src_rst_literal_block_empty():
     assert after == before
 
 
-def test_format_src_rst_literal_blocks_nested():
+def test_format_src_rst_literal_blocks_nested() -> None:
     before = dedent(
         """
         * hello
@@ -596,7 +598,7 @@ def test_format_src_rst_literal_blocks_nested():
     assert errors == []
 
 
-def test_format_src_rst_literal_blocks_empty():
+def test_format_src_rst_literal_blocks_empty() -> None:
     before = dedent(
         """
         Example::
@@ -615,7 +617,7 @@ def test_format_src_rst_literal_blocks_empty():
     assert errors == []
 
 
-def test_format_src_rst_literal_blocks_comments():
+def test_format_src_rst_literal_blocks_comments() -> None:
     before = (
         ".. blacken-docs:off\n"
         "Example::\n"
@@ -628,7 +630,7 @@ def test_format_src_rst_literal_blocks_comments():
     assert after == before
 
 
-def test_format_src_rst_sphinx_doctest():
+def test_format_src_rst_sphinx_doctest() -> None:
     before = (
         ".. testsetup:: group1\n"
         "\n"
@@ -673,7 +675,7 @@ def test_format_src_rst_sphinx_doctest():
     )
 
 
-def test_format_src_rst_indented():
+def test_format_src_rst_indented() -> None:
     before = dedent(
         """\
         .. versionadded:: 3.1
@@ -682,7 +684,7 @@ def test_format_src_rst_indented():
 
             .. code-block:: python
 
-                def hi():
+                def hi() -> None:
                     f(1,2,3)
 
             world
@@ -697,7 +699,7 @@ def test_format_src_rst_indented():
 
             .. code-block:: python
 
-                def hi():
+                def hi() -> None:
                     f(1, 2, 3)
 
             world
@@ -705,7 +707,7 @@ def test_format_src_rst_indented():
     )
 
 
-def test_format_src_rst_code_block_indent():
+def test_format_src_rst_code_block_indent() -> None:
     before = "\n".join(
         [
             ".. code-block:: python",
@@ -723,7 +725,7 @@ def test_format_src_rst_code_block_indent():
     )
 
 
-def test_format_src_rst_with_highlight_directives():
+def test_format_src_rst_with_highlight_directives() -> None:
     before = (
         ".. code-block:: python\n"
         "    :lineno-start: 10\n"
@@ -743,7 +745,7 @@ def test_format_src_rst_with_highlight_directives():
     )
 
 
-def test_format_src_rst_python_inside_non_python_code_block():
+def test_format_src_rst_python_inside_non_python_code_block() -> None:
     before = (
         "blacken-docs does changes like:\n"
         "\n"
@@ -758,7 +760,7 @@ def test_format_src_rst_python_inside_non_python_code_block():
     assert after == before
 
 
-def test_format_src_rst_python_comments():
+def test_format_src_rst_python_comments() -> None:
     before = (
         ".. blacken-docs:off\n"
         ".. code-block:: python\n"
@@ -771,7 +773,7 @@ def test_format_src_rst_python_comments():
     assert after == before
 
 
-def test_integration_ok(tmp_path, capsys):
+def test_integration_ok(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f(1, 2, 3)\n" "```\n",
@@ -784,7 +786,7 @@ def test_integration_ok(tmp_path, capsys):
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
 
 
-def test_integration_modifies(tmp_path, capsys):
+def test_integration_modifies(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f(1,2,3)\n" "```\n",
@@ -798,7 +800,7 @@ def test_integration_modifies(tmp_path, capsys):
     assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
 
 
-def test_integration_line_length(tmp_path):
+def test_integration_line_length(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n"
@@ -821,7 +823,7 @@ def test_integration_line_length(tmp_path):
     )
 
 
-def test_integration_check(tmp_path):
+def test_integration_check(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     text = dedent(
         """\
@@ -838,7 +840,7 @@ def test_integration_check(tmp_path):
     assert f.read_text() == text
 
 
-def test_integration_preview(tmp_path):
+def test_integration_preview(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         dedent(
@@ -863,7 +865,7 @@ def test_integration_preview(tmp_path):
 
 
 @pytest.mark.xfail(reason="Need to decide how to handle pyi files")
-def test_integration_pyi(tmp_path):
+def test_integration_pyi(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         dedent(
@@ -892,7 +894,7 @@ def test_integration_pyi(tmp_path):
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
-def test_integration_py36(tmp_path):
+def test_integration_py36(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n"
@@ -924,7 +926,7 @@ def test_integration_py36(tmp_path):
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
-def test_integration_filename_last(tmp_path):
+def test_integration_filename_last(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n"
@@ -958,7 +960,7 @@ def test_integration_filename_last(tmp_path):
 @pytest.mark.xfail(
     reason="Need to decide if we want to handle multiple target versions"
 )
-def test_integration_multiple_target_version(tmp_path):
+def test_integration_multiple_target_version(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n"
@@ -981,7 +983,7 @@ def test_integration_multiple_target_version(tmp_path):
 
 
 @pytest.mark.xfail(reason="Need to if we want to support this")
-def test_integration_skip_string_normalization(tmp_path):
+def test_integration_skip_string_normalization(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f('hi')\n" "```\n",
@@ -993,7 +995,7 @@ def test_integration_skip_string_normalization(tmp_path):
     assert f.read_text() == ("```python\n" "f('hi')\n" "```\n")
 
 
-def test_integration_syntax_error(tmp_path, capsys):
+def test_integration_syntax_error(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f(\n" "```\n",
@@ -1007,7 +1009,9 @@ def test_integration_syntax_error(tmp_path, capsys):
     assert f.read_text() == ("```python\n" "f(\n" "```\n")
 
 
-def test_integration_ignored_syntax_error(tmp_path, capsys):
+def test_integration_ignored_syntax_error(
+    tmp_path: Path, capsys: CaptureFixture[str]
+) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f( )\n" "```\n" "\n" "```python\n" "f(\n" "```\n",
@@ -1022,7 +1026,7 @@ def test_integration_ignored_syntax_error(tmp_path, capsys):
     )
 
 
-def test_format_src_rst_jupyter_sphinx():
+def test_format_src_rst_jupyter_sphinx() -> None:
     before = (
         "hello\n" "\n" ".. jupyter-execute::\n" "\n" "    f(1,2,3)\n" "\n" "world\n"
     )
@@ -1032,7 +1036,7 @@ def test_format_src_rst_jupyter_sphinx():
     )
 
 
-def test_format_src_rst_jupyter_sphinx_with_directive():
+def test_format_src_rst_jupyter_sphinx_with_directive() -> None:
     before = (
         "hello\n"
         "\n"
@@ -1056,10 +1060,10 @@ def test_format_src_rst_jupyter_sphinx_with_directive():
     )
 
 
-def test_format_src_python_docstring_markdown():
+def test_format_src_python_docstring_markdown() -> None:
     before = dedent(
         '''\
-        def f():
+        def f() -> None:
             """
             hello world
 
@@ -1073,7 +1077,7 @@ def test_format_src_python_docstring_markdown():
     after, _ = format_file_contents(before, [])
     assert after == dedent(
         '''\
-        def f():
+        def f() -> None:
             """
             hello world
 
@@ -1086,10 +1090,10 @@ def test_format_src_python_docstring_markdown():
     )
 
 
-def test_format_src_python_docstring_rst():
+def test_format_src_python_docstring_rst() -> None:
     before = dedent(
         '''\
-        def f():
+        def f() -> None:
             """
             hello world
 
@@ -1103,7 +1107,7 @@ def test_format_src_python_docstring_rst():
     after, _ = format_file_contents(before, [])
     assert after == dedent(
         '''\
-        def f():
+        def f() -> None:
             """
             hello world
 
@@ -1116,7 +1120,7 @@ def test_format_src_python_docstring_rst():
     )
 
 
-def test_format_src_rst_pycon():
+def test_format_src_rst_pycon() -> None:
     before = (
         "hello\n"
         "\n"
@@ -1140,7 +1144,7 @@ def test_format_src_rst_pycon():
     )
 
 
-def test_format_src_rst_pycon_with_continuation():
+def test_format_src_rst_pycon_with_continuation() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1163,7 +1167,7 @@ def test_format_src_rst_pycon_with_continuation():
     )
 
 
-def test_format_src_rst_pycon_adds_continuation():
+def test_format_src_rst_pycon_adds_continuation() -> None:
     before = ".. code-block:: pycon\n" "\n" '    >>> d = {"a": 1,"b": 2,"c": 3,}\n' "\n"
     after, _ = format_file_contents(before, [])
     assert after == (
@@ -1178,7 +1182,7 @@ def test_format_src_rst_pycon_adds_continuation():
     )
 
 
-def test_format_src_rst_pycon_preserves_trailing_whitespace():
+def test_format_src_rst_pycon_preserves_trailing_whitespace() -> None:
     before = (
         "hello\n"
         "\n"
@@ -1194,7 +1198,7 @@ def test_format_src_rst_pycon_preserves_trailing_whitespace():
     assert after == before
 
 
-def test_format_src_rst_pycon_indented():
+def test_format_src_rst_pycon_indented() -> None:
     before = (
         ".. versionadded:: 3.1\n"
         "\n"
@@ -1224,7 +1228,7 @@ def test_format_src_rst_pycon_indented():
     )
 
 
-def test_format_src_rst_pycon_code_block_is_final_line1():
+def test_format_src_rst_pycon_code_block_is_final_line1() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1242,7 +1246,7 @@ def test_format_src_rst_pycon_code_block_is_final_line1():
     )
 
 
-def test_format_src_rst_pycon_code_block_is_final_line2():
+def test_format_src_rst_pycon_code_block_is_final_line2() -> None:
     before = ".. code-block:: pycon\n" "\n" "    >>> if True:\n" "    ...   pass\n"
     after, _ = format_file_contents(before, [])
     assert after == (
@@ -1254,7 +1258,7 @@ def test_format_src_rst_pycon_code_block_is_final_line2():
     )
 
 
-def test_format_src_rst_pycon_nested_def1():
+def test_format_src_rst_pycon_nested_def1() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1273,7 +1277,7 @@ def test_format_src_rst_pycon_nested_def1():
     )
 
 
-def test_format_src_rst_pycon_nested_def2():
+def test_format_src_rst_pycon_nested_def2() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1291,7 +1295,7 @@ def test_format_src_rst_pycon_nested_def2():
     )
 
 
-def test_format_src_rst_pycon_empty_line():
+def test_format_src_rst_pycon_empty_line() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1310,7 +1314,7 @@ def test_format_src_rst_pycon_empty_line():
     )
 
 
-def test_format_src_rst_pycon_preserves_output_indentation():
+def test_format_src_rst_pycon_preserves_output_indentation() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1323,7 +1327,7 @@ def test_format_src_rst_pycon_preserves_output_indentation():
     assert after == before
 
 
-def test_format_src_rst_pycon_elided_traceback():
+def test_format_src_rst_pycon_elided_traceback() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1336,19 +1340,19 @@ def test_format_src_rst_pycon_elided_traceback():
     assert after == before
 
 
-def test_format_src_rst_pycon_no_prompt():
+def test_format_src_rst_pycon_no_prompt() -> None:
     before = ".. code-block:: pycon\n" "\n" "    pass\n"
     after, _ = format_file_contents(before, [])
     assert after == before
 
 
-def test_format_src_rst_pycon_no_trailing_newline():
+def test_format_src_rst_pycon_no_trailing_newline() -> None:
     before = ".. code-block:: pycon\n" "\n" "    >>> pass"
     after, _ = format_file_contents(before, [])
     assert after == (".. code-block:: pycon\n" "\n" "    >>> pass\n")
 
 
-def test_format_src_rst_pycon_comment_before_promopt():
+def test_format_src_rst_pycon_comment_before_promopt() -> None:
     before = (
         ".. code-block:: pycon\n"
         "\n"
@@ -1364,7 +1368,7 @@ def test_format_src_rst_pycon_comment_before_promopt():
     )
 
 
-def test_format_src_rst_pycon_comments():
+def test_format_src_rst_pycon_comments() -> None:
     before = (
         ".. blacken-docs:off\n"
         ".. code-block:: pycon\n"
@@ -1377,7 +1381,7 @@ def test_format_src_rst_pycon_comments():
     assert after == before
 
 
-def test_format_src_rst_pycon_empty():
+def test_format_src_rst_pycon_empty() -> None:
     before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
     after, _ = format_file_contents(before, [])
     assert after == before
