@@ -22,6 +22,9 @@ dev = [
 ]
 
 [tool.coverage.report]
+exclude_also = [
+  "if TYPE_CHECKING",
+]
 fail_under = 100
 omit = ["mirror.py"]
 show_missing = true
