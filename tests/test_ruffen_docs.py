@@ -152,19 +152,30 @@ def test_format_src_indented_markdown() -> None:
 
 
 def test_format_src_markdown_pycon() -> None:
-    before = (
-        "hello\n"
-        "\n"
-        "```pycon\n"
-        "\n"
-        "    >>> f(1,2,3)\n"
-        "    output\n"
-        "```\n"
-        "world\n"
+    before = dedent(
+        """\
+        hello
+
+        ```pycon
+
+            >>> f(1,2,3)
+            output
+        ```
+        world
+        """,
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n" "\n" "```pycon\n" "\n" ">>> f(1, 2, 3)\n" "output\n" "```\n" "world\n"
+    assert after == dedent(
+        """\
+        hello
+
+        ```pycon
+
+        >>> f(1, 2, 3)
+        output
+        ```
+        world
+        """,
     )
 
 
@@ -183,152 +194,155 @@ def test_format_src_markdown_pycon_after_newline() -> None:
 
 
 def test_format_src_markdown_pycon_options() -> None:
-    before = (
-        "hello\n"
-        "\n"
-        "```pycon title='Session 1'\n"
-        "\n"
-        "    >>> f(1,2,3)\n"
-        "    output\n"
-        "```\n"
-        "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        ```pycon title='Session 1'
+
+            >>> f(1,2,3)
+            output
+        ```
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n"
-        "\n"
-        "```pycon title='Session 1'\n"
-        "\n"
-        ">>> f(1, 2, 3)\n"
-        "output\n"
-        "```\n"
-        "world\n"
-    )
+    assert after == dedent("""\
+        hello
+
+        ```pycon title='Session 1'
+
+        >>> f(1, 2, 3)
+        output
+        ```
+        world
+        """)
 
 
 def test_format_src_markdown_pycon_twice() -> None:
-    before = (
-        "```pycon\n"
-        ">>> f(1,2,3)\n"
-        "output\n"
-        "```\n"
-        "example 2\n"
-        "```pycon\n"
-        ">>> f(1,2,3)\n"
-        "output\n"
-        "```\n"
-    )
+    before = dedent("""\
+        ```pycon
+        >>> f(1,2,3)
+        output
+        ```
+        example 2
+        ```pycon
+        >>> f(1,2,3)
+        output
+        ```
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "```pycon\n"
-        ">>> f(1, 2, 3)\n"
-        "output\n"
-        "```\n"
-        "example 2\n"
-        "```pycon\n"
-        ">>> f(1, 2, 3)\n"
-        "output\n"
-        "```\n"
-    )
+    assert after == dedent("""\
+        ```pycon
+        >>> f(1, 2, 3)
+        output
+        ```
+        example 2
+        ```pycon
+        >>> f(1, 2, 3)
+        output
+        ```
+        """)
 
 
 def test_format_src_markdown_comments_disable() -> None:
-    before = (
-        "<!-- blacken-docs:off -->\n"
-        "```python\n"
-        "'single quotes rock'\n"
-        "```\n"
-        "<!-- blacken-docs:on -->\n"
-    )
+    before = dedent("""\
+        <!-- blacken-docs:off -->
+        ```python
+        'single quotes rock'
+        ```
+        <!-- blacken-docs:on -->
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_markdown_comments_disabled_enabled() -> None:
-    before = (
-        "<!-- blacken-docs:off -->\n"
-        "```python\n"
-        "'single quotes rock'\n"
-        "```\n"
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        "'double quotes rock'\n"
-        "```\n"
-    )
+    before = dedent("""\
+        <!-- blacken-docs:off -->
+        ```python
+        'single quotes rock'
+        ```
+        <!-- blacken-docs:on -->
+        ```python
+        'double quotes rock'
+        ```
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "<!-- blacken-docs:off -->\n"
-        "```python\n"
-        "'single quotes rock'\n"
-        "```\n"
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        '"double quotes rock"\n'
-        "```\n"
-    )
+    assert after == dedent("""\
+        <!-- blacken-docs:off -->
+        ```python
+        'single quotes rock'
+        ```
+        <!-- blacken-docs:on -->
+        ```python
+        "double quotes rock"
+        ```
+        """)
 
 
 def test_format_src_markdown_comments_before() -> None:
-    before = (
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        "'double quotes rock'\n"
-        "```\n"
-    )
+    before = dedent("""\
+        <!-- blacken-docs:off -->
+        <!-- blacken-docs:on -->
+        ```python
+        'double quotes rock'
+        ```
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        '"double quotes rock"\n'
-        "```\n"
-    )
+    assert after == dedent("""\
+        <!-- blacken-docs:off -->
+        <!-- blacken-docs:on -->
+        ```python
+        "double quotes rock"
+        ```
+        """)
 
 
 def test_format_src_markdown_comments_after() -> None:
-    before = (
-        "```python\n"
-        "'double quotes rock'\n"
-        "```\n"
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:on -->\n"
-    )
+    before = dedent("""\
+        ```python
+        'double quotes rock'
+        ```
+        <!-- blacken-docs:off -->
+        <!-- blacken-docs:on -->
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "```python\n"
-        '"double quotes rock"\n'
-        "```\n"
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:on -->\n"
-    )
+    assert after == dedent("""\
+        ```python
+        "double quotes rock"
+        ```
+        <!-- blacken-docs:off -->
+        <!-- blacken-docs:on -->
+        """)
 
 
 def test_format_src_markdown_comments_only_on() -> None:
     # fmt: off
-    before = (
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        "'double quotes rock'\n"
-        "```\n"
+    before = dedent("""\
+        <!-- blacken-docs:on -->
+        ```python
+        'double quotes rock'
+        ```
+        """,
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "<!-- blacken-docs:on -->\n"
-        "```python\n"
-        '"double quotes rock"\n'
-        "```\n"
+    assert after == dedent("""\
+        <!-- blacken-docs:on -->
+        ```python
+        "double quotes rock"
+        ```
+        """,
     )
     # fmt: on
 
 
 def test_format_src_markdown_comments_only_off() -> None:
     # fmt: off
-    before = (
-        "<!-- blacken-docs:off -->\n"
-        "```python\n"
-        "'single quotes rock'\n"
-        "```\n"
+    before = dedent("""\
+        <!-- blacken-docs:off -->
+        ```python
+        'single quotes rock'
+        ```
+        """,
     )
     # fmt: on
     after, _ = format_file_contents(before, FORMATTER_MODE)
@@ -336,79 +350,88 @@ def test_format_src_markdown_comments_only_off() -> None:
 
 
 def test_format_src_markdown_comments_multiple() -> None:
-    before = (
-        "<!-- blacken-docs:on -->\n"  # ignored
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:on -->\n"
-        "<!-- blacken-docs:on -->\n"  # ignored
-        "<!-- blacken-docs:off -->\n"
-        "<!-- blacken-docs:off -->\n"  # ignored
-        "```python\n"
-        "'single quotes rock'\n"
-        "```\n"  # no on comment, off until the end
+    before = dedent(
+        """\
+        "<!-- blacken-docs:on -->
+        "  # ignored
+        "<!-- blacken-docs:off -->
+        <!-- blacken-docs:on -->
+        <!-- blacken-docs:on -->
+        "  # ignored
+        "<!-- blacken-docs:off -->
+        <!-- blacken-docs:off -->
+        "  # ignored
+        "```python
+        'single quotes rock'
+        ```
+        """,  # no on comment, off until the end
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_on_off_comments_in_code_blocks() -> None:
-    before = (
-        "````md\n"
-        "<!-- blacken-docs:off -->\n"
-        "```python\n"
-        "f(1,2,3)\n"
-        "```\n"
-        "<!-- blacken-docs:on -->\n"
-        "````\n"
-    )
+    before = dedent("""\
+        ````md
+        <!-- blacken-docs:off -->
+        ```python
+        f(1,2,3)
+        ```
+        <!-- blacken-docs:on -->
+        ````
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_markdown_comments_disable_pycon() -> None:
-    before = (
-        "<!-- blacken-docs:off -->\n"
-        "```pycon\n"
-        ">>> 'single quotes rock'\n"
-        "```\n"
-        "<!-- blacken-docs:on -->\n"
-    )
+    before = dedent("""\
+        <!-- blacken-docs:off -->
+        ```pycon
+        >>> 'single quotes rock'
+        ```
+        <!-- blacken-docs:on -->
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_latex_minted() -> None:
-    before = (
-        "hello\n" "\\begin{minted}{python}\n" "f(1,2,3)\n" "\\end{minted}\n" "world!"
-    )
+    before = dedent("""\
+        hello
+        \\begin{minted}{python}
+        f(1,2,3)
+        \\end{minted}
+        world!""")
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n" "\\begin{minted}{python}\n" "f(1, 2, 3)\n" "\\end{minted}\n" "world!"
-    )
+    assert after == dedent("""\
+        hello
+        \\begin{minted}{python}
+        f(1, 2, 3)
+        \\end{minted}
+        world!""")
 
 
 def test_format_src_latex_minted_opt() -> None:
-    before = (
-        "maths!\n"
-        "\\begin{minted}[mathescape]{python}\n"
-        "# Returns $\\sum_{i=1}^{n}i$\n"
-        "def sum_from_one_to(n):\n"
-        "  r = range(1, n+1)\n"
-        "  return sum(r)\n"
-        "\\end{minted}\n"
-        "done"
-    )
+    before = dedent("""\
+        maths!
+        \\begin{minted}[mathescape]{python}
+        # Returns $\\sum_{i=1}^{n}i$
+        def sum_from_one_to(n):
+          r = range(1, n+1)
+          return sum(r)
+        \\end{minted}
+        done""")
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "maths!\n"
-        "\\begin{minted}[mathescape]{python}\n"
-        "# Returns $\\sum_{i=1}^{n}i$\n"
-        "def sum_from_one_to(n):\n"
-        "    r = range(1, n + 1)\n"
-        "    return sum(r)\n"
-        "\\end{minted}\n"
-        "done"
-    )
+    assert after == dedent("""\
+        maths!
+        \\begin{minted}[mathescape]{python}
+        # Returns $\\sum_{i=1}^{n}i$
+        def sum_from_one_to(n):
+            r = range(1, n + 1)
+            return sum(r)
+        \\end{minted}
+        done""")
 
 
 def test_format_src_latex_minted_indented() -> None:
@@ -438,115 +461,130 @@ def test_format_src_latex_minted_indented() -> None:
 
 
 def test_format_src_latex_minted_pycon() -> None:
-    before = (
-        "Preceding text\n"
-        "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
-        ">>> print( 'Hello World' )\n"
-        "Hello World\n"
-        "\\end{minted}\n"
-        "Following text."
-    )
+    before = dedent("""\
+        Preceding text
+        \\begin{minted}[gobble=2,showspaces]{pycon}
+        >>> print( 'Hello World' )
+        Hello World
+        \\end{minted}
+        Following text.""")
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "Preceding text\n"
-        "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
-        '>>> print("Hello World")\n'
-        "Hello World\n"
-        "\\end{minted}\n"
-        "Following text."
-    )
+    assert after == dedent("""\
+        Preceding text
+        \\begin{minted}[gobble=2,showspaces]{pycon}
+        >>> print("Hello World")
+        Hello World
+        \\end{minted}
+        Following text.""")
 
 
 def test_format_src_latex_minted_pycon_indented() -> None:
     # Nicer style to put the \begin and \end on new lines,
     # but not actually required for the begin line
-    before = (
-        "Preceding text\n"
-        "  \\begin{minted}{pycon}\n"
-        "    >>> print( 'Hello World' )\n"
-        "    Hello World\n"
-        "  \\end{minted}\n"
-        "Following text."
-    )
+    before = dedent("""\
+        Preceding text
+          \\begin{minted}{pycon}
+            >>> print( 'Hello World' )
+            Hello World
+          \\end{minted}
+        Following text.""")
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "Preceding text\n"
-        "  \\begin{minted}{pycon}\n"
-        '  >>> print("Hello World")\n'
-        "  Hello World\n"
-        "  \\end{minted}\n"
-        "Following text."
-    )
+    assert after == dedent("""\
+        Preceding text
+          \\begin{minted}{pycon}
+          >>> print("Hello World")
+          Hello World
+          \\end{minted}
+        Following text.""")
 
 
 def test_format_src_latex_minted_comments_off() -> None:
-    before = (
-        "% blacken-docs:off\n"
-        "\\begin{minted}{python}\n"
-        "'single quotes rock'\n"
-        "\\end{minted}\n"
-        "% blacken-docs:on\n"
-    )
+    before = dedent("""\
+        % blacken-docs:off
+        \\begin{minted}{python}
+        'single quotes rock'
+        \\end{minted}
+        % blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_latex_minted_comments_off_pycon() -> None:
-    before = (
-        "% blacken-docs:off\n"
-        "\\begin{minted}{pycon}\n"
-        ">>> 'single quotes rock'\n"
-        "\\end{minted}\n"
-        "% blacken-docs:on\n"
-    )
+    before = dedent("""\
+        % blacken-docs:off
+        \\begin{minted}{pycon}
+        >>> 'single quotes rock'
+        \\end{minted}
+        % blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_pythontex() -> None:
     # fmt: off
-    before = (
-        "hello\n"
-        "\\begin{pyblock}\n"
-        "f(1,2,3)\n"
-        "\\end{pyblock}\n"
-        "world!"
+    before = dedent("""\
+        hello
+        \\begin{pyblock}
+        f(1,2,3)
+        \\end{pyblock}
+        world!""",
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n"
-        "\\begin{pyblock}\n"
-        "f(1, 2, 3)\n"
-        "\\end{pyblock}\n"
-        "world!"
+    assert after == dedent("""\
+        hello
+        \\begin{pyblock}
+        f(1, 2, 3)
+        \\end{pyblock}
+        world!""",
     )
     # fmt: on
 
 
 def test_format_src_pythontex_comments_off() -> None:
-    before = (
-        "% blacken-docs:off\n"
-        "\\begin{pyblock}\n"
-        "f(1,2,3)\n"
-        "\\end{pyblock}\n"
-        "% blacken-docs:on\n"
-    )
+    before = dedent("""\
+        % blacken-docs:off
+        \\begin{pyblock}
+        f(1,2,3)
+        \\end{pyblock}
+        % blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst() -> None:
-    before = (
-        "hello\n" "\n" ".. code-block:: python\n" "\n" "    f(1,2,3)\n" "\n" "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        .. code-block:: python
+
+            f(1,2,3)
+
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n" "\n" ".. code-block:: python\n" "\n" "    f(1, 2, 3)\n" "\n" "world\n"
-    )
+    assert after == dedent("""\
+        hello
+
+        .. code-block:: python
+
+            f(1, 2, 3)
+
+        world
+        """)
 
 
 def test_format_src_rst_empty() -> None:
-    before = "some text\n\n.. code-block:: python\n\n\nsome other text\n"
+    before = dedent("""\
+    some text
+
+    .. code-block:: python
+
+
+    some other text
+    """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
@@ -631,61 +669,61 @@ def test_format_src_rst_literal_blocks_empty() -> None:
 
 
 def test_format_src_rst_literal_blocks_comments() -> None:
-    before = (
-        ".. blacken-docs:off\n"
-        "Example::\n"
-        "\n"
-        "    'single quotes rock'\n"
-        "\n"
-        ".. blacken-docs:on\n"
-    )
+    before = dedent("""\
+        .. blacken-docs:off
+        Example::
+
+            'single quotes rock'
+
+        .. blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE, rst_literal_blocks=True)
     assert after == before
 
 
 def test_format_src_rst_sphinx_doctest() -> None:
-    before = (
-        ".. testsetup:: group1\n"
-        "\n"
-        "   import parrot  \n"
-        "   mock = SomeMock( )\n"
-        "\n"
-        ".. testcleanup:: group1\n"
-        "\n"
-        "   mock.stop( )\n"
-        "\n"
-        ".. doctest:: group1\n"
-        "\n"
-        "   >>> parrot.voom( 3000 )\n"
-        "   This parrot wouldn't voom if you put 3000 volts through it!\n"
-        "\n"
-        ".. testcode::\n"
-        "\n"
-        "   parrot.voom( 3000 )\n"
-        "\n"
-    )
+    before = dedent("""\
+        .. testsetup:: group1
+
+           import parrot
+           mock = SomeMock( )
+
+        .. testcleanup:: group1
+
+           mock.stop( )
+
+        .. doctest:: group1
+
+           >>> parrot.voom( 3000 )
+           This parrot wouldn't voom if you put 3000 volts through it!
+
+        .. testcode::
+
+           parrot.voom( 3000 )
+
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. testsetup:: group1\n"
-        "\n"
-        "   import parrot\n"
-        "\n"
-        "   mock = SomeMock()\n"
-        "\n"
-        ".. testcleanup:: group1\n"
-        "\n"
-        "   mock.stop()\n"
-        "\n"
-        ".. doctest:: group1\n"
-        "\n"
-        "   >>> parrot.voom(3000)\n"
-        "   This parrot wouldn't voom if you put 3000 volts through it!\n"
-        "\n"
-        ".. testcode::\n"
-        "\n"
-        "   parrot.voom(3000)\n"
-        "\n"
-    )
+    assert after == dedent("""\
+        .. testsetup:: group1
+
+           import parrot
+
+           mock = SomeMock()
+
+        .. testcleanup:: group1
+
+           mock.stop()
+
+        .. doctest:: group1
+
+           >>> parrot.voom(3000)
+           This parrot wouldn't voom if you put 3000 volts through it!
+
+        .. testcode::
+
+           parrot.voom(3000)
+
+        """)
 
 
 def test_format_src_rst_indented() -> None:
@@ -721,55 +759,64 @@ def test_format_src_rst_indented() -> None:
 
 
 def test_format_src_rst_code_block_indent() -> None:
-    before = ".. code-block:: python\n   \n   f(1,2,3)\n"
+    before = dedent("""\
+        .. code-block:: python
+
+           f(1,2,3)
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == ".. code-block:: python\n   \n   f(1, 2, 3)\n"
+    assert after == dedent("""\
+        .. code-block:: python
+
+           f(1, 2, 3)
+        """)
 
 
 def test_format_src_rst_with_highlight_directives() -> None:
-    before = (
-        ".. code-block:: python\n"
-        "    :lineno-start: 10\n"
-        "    :emphasize-lines: 11\n"
-        "\n"
-        "    def foo():\n"
-        "        bar(1,2,3)\n"
-    )
+    before = dedent("""\
+        .. code-block:: python
+            :lineno-start: 10
+            :emphasize-lines: 11
+
+            def foo():
+                bar(1,2,3)
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: python\n"
-        "    :lineno-start: 10\n"
-        "    :emphasize-lines: 11\n"
-        "\n"
-        "    def foo():\n"
-        "        bar(1, 2, 3)\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: python
+            :lineno-start: 10
+            :emphasize-lines: 11
+
+            def foo():
+                bar(1, 2, 3)
+        """)
 
 
 def test_format_src_rst_python_inside_non_python_code_block() -> None:
-    before = (
-        "blacken-docs does changes like:\n"
-        "\n"
-        ".. code-block:: diff\n"
-        "\n"
-        "     .. code-block:: python\n"
-        "\n"
-        "    -    'Hello World'\n"
-        '    +    "Hello World"\n'
-    )
+    before = dedent("""\
+        blacken-docs does changes like:
+
+        .. code-block:: diff
+
+             .. code-block:: python
+
+            -    'Hello World'
+
+            +    "Hello World"
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_python_comments() -> None:
-    before = (
-        ".. blacken-docs:off\n"
-        ".. code-block:: python\n"
-        "\n"
-        "    'single quotes rock'\n"
-        "\n"
-        ".. blacken-docs:on\n"
-    )
+    before = dedent("""\
+        .. blacken-docs:off
+        .. code-block:: python
+
+            'single quotes rock'
+
+        .. blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
@@ -777,20 +824,32 @@ def test_format_src_rst_python_comments() -> None:
 def test_integration_ok(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(1, 2, 3)\n" "```\n",
+        dedent("""\
+        ```python
+        f(1, 2, 3)
+        ```
+        """),
     )
 
     result = main((str(f),))
 
     assert result == 0
     assert not capsys.readouterr()[1]
-    assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
+    assert f.read_text() == dedent("""\
+        ```python
+        f(1, 2, 3)
+        ```
+        """)
 
 
 def test_integration_modifies(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(1,2,3)\n" "```\n",
+        dedent("""\
+        ```python
+        f(1,2,3)
+        ```
+        """),
     )
 
     result = main((str(f),))
@@ -798,15 +857,21 @@ def test_integration_modifies(tmp_path: Path, capsys: CaptureFixture[str]) -> No
     assert result == 1
     out, _ = capsys.readouterr()
     assert out == f"{f}: Rewriting...\n"
-    assert f.read_text() == ("```python\n" "f(1, 2, 3)\n" "```\n")
+    assert f.read_text() == dedent("""\
+    ```python
+    f(1, 2, 3)
+    ```
+    """)
 
 
 def test_integration_line_length(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n"
-        "foo(very_very_very_very_very_very_very, long_long_long_long_long)\n"
-        "```\n",
+        dedent("""\
+        ```python
+        foo(very_very_very_very_very_very_very, long_long_long_long_long)
+        ```
+        """),
     )
 
     result = main((str(f), "--config", "line-length=80"))
@@ -814,14 +879,14 @@ def test_integration_line_length(tmp_path: Path) -> None:
 
     result2 = main((str(f), "--config", "line-length=50"))
     assert result2 == 1
-    assert f.read_text() == (
-        "```python\n"
-        "foo(\n"
-        "    very_very_very_very_very_very_very,\n"
-        "    long_long_long_long_long,\n"
-        ")\n"
-        "```\n"
-    )
+    assert f.read_text() == dedent("""\
+        ```python
+        foo(
+            very_very_very_very_very_very_very,
+            long_long_long_long_long,
+        )
+        ```
+        """)
 
 
 def test_integration_check(tmp_path: Path) -> None:
@@ -859,7 +924,7 @@ def test_integration_preview(tmp_path: Path) -> None:
     assert f.read_text() == dedent(
         """\
         ```python
-        x = "a" "b"
+        x = "ab"
         ```
         """,
     )
@@ -897,15 +962,17 @@ def test_integration_pyi(tmp_path: Path) -> None:  # pragma: no cover
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
 def test_integration_py36(tmp_path: Path) -> None:  # pragma: no cover# pragma: no cover
     f = tmp_path / "f.md"
-    f.write_text(  # pragma: no cover
-        "```python\n"
-        "def very_very_long_function_name(\n"
-        "    very_very_very_very_very_very,\n"
-        "    very_very_very_very_very_very,\n"
-        "    *long_long_long_long_long_long\n"
-        "):\n"
-        "    pass\n"
-        "```\n",
+    f.write_text(
+        dedent("""\
+        ```python
+        def very_very_long_function_name(
+            very_very_very_very_very_very,
+            very_very_very_very_very_very,
+            *long_long_long_long_long_long
+        ):
+            pass
+        ```
+        """),
     )
 
     result = main((str(f),))
@@ -914,30 +981,32 @@ def test_integration_py36(tmp_path: Path) -> None:  # pragma: no cover# pragma: 
     result2 = main((str(f), "--target-version=py36"))
 
     assert result2 == 1
-    assert f.read_text() == (
-        "```python\n"
-        "def very_very_long_function_name(\n"
-        "    very_very_very_very_very_very,\n"
-        "    very_very_very_very_very_very,\n"
-        "    *long_long_long_long_long_long,\n"
-        "):\n"
-        "    pass\n"
-        "```\n"
-    )
+    assert f.read_text() == dedent("""\
+        ```python
+        def very_very_long_function_name(
+            very_very_very_very_very_very,
+            very_very_very_very_very_very,
+            *long_long_long_long_long_long,
+        ):
+            pass
+        ```
+        """)
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
 def test_integration_filename_last(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
-    f.write_text(  # pragma: no cover
-        "```python\n"
-        "def very_very_long_function_name(\n"
-        "    very_very_very_very_very_very,\n"
-        "    very_very_very_very_very_very,\n"
-        "    *long_long_long_long_long_long\n"
-        "):\n"
-        "    pass\n"
-        "```\n",
+    f.write_text(
+        dedent("""\"""
+        ```python
+        def very_very_long_function_name(
+            very_very_very_very_very_very,
+            very_very_very_very_very_very,
+            *long_long_long_long_long_long
+        ):
+            pass
+        ```
+        """),
     )
 
     result = main((str(f),))
@@ -946,16 +1015,16 @@ def test_integration_filename_last(tmp_path: Path) -> None:  # pragma: no cover
     result2 = main(("--target-version", "py36", str(f)))
 
     assert result2 == 1
-    assert f.read_text() == (
-        "```python\n"
-        "def very_very_long_function_name(\n"
-        "    very_very_very_very_very_very,\n"
-        "    very_very_very_very_very_very,\n"
-        "    *long_long_long_long_long_long,\n"
-        "):\n"
-        "    pass\n"
-        "```\n"
-    )
+    assert f.read_text() == dedent("""\
+        ```python
+        def very_very_long_function_name(
+            very_very_very_very_very_very,
+            very_very_very_very_very_very,
+            *long_long_long_long_long_long,
+        ):
+            pass
+        ```
+        """)
 
 
 @pytest.mark.xfail(
@@ -966,14 +1035,16 @@ def test_integration_multiple_target_version(
 ) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n"
-        "def very_very_long_function_name(\n"
-        "    very_very_very_very_very_very,\n"
-        "    very_very_very_very_very_very,\n"
-        "    *long_long_long_long_long_long\n"
-        "):\n"
-        "    pass\n"
-        "```\n",
+        dedent("""\
+        ```python
+        def very_very_long_function_name(
+            very_very_very_very_very_very,
+            very_very_very_very_very_very,
+            *long_long_long_long_long_long
+        ):
+            pass
+        ```
+        """),
     )
 
     result = main((str(f),))
@@ -991,19 +1062,31 @@ def test_integration_skip_string_normalization(
 ) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f('hi')\n" "```\n",
+        dedent("""\
+        ```python
+        f('hi')
+        ```
+        """),
     )
 
     result = main((str(f), "--skip-string-normalization"))
 
     assert result == 0
-    assert f.read_text() == ("```python\n" "f('hi')\n" "```\n")
+    assert f.read_text() == dedent("""\
+        ```python
+        f('hi')
+        ```
+        """)
 
 
 def test_integration_syntax_error(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f(\n" "```\n",
+        dedent("""\
+        ```python
+        f(
+        ```
+        """),
     )
 
     result = main((str(f),))
@@ -1011,7 +1094,11 @@ def test_integration_syntax_error(tmp_path: Path, capsys: CaptureFixture[str]) -
     assert result == 2
     out, _ = capsys.readouterr()
     assert out.startswith(f"{f}:1: code block parse error")
-    assert f.read_text() == ("```python\n" "f(\n" "```\n")
+    assert f.read_text() == dedent("""\
+        ```python
+        f(
+        ```
+        """)
 
 
 def test_integration_ignored_syntax_error(
@@ -1020,50 +1107,76 @@ def test_integration_ignored_syntax_error(
 ) -> None:
     f = tmp_path / "f.md"
     f.write_text(
-        "```python\n" "f( )\n" "```\n" "\n" "```python\n" "f(\n" "```\n",
+        dedent("""\
+        ```python
+        f( )
+        ```
+
+        ```python
+        f(
+        ```
+        """),
     )
 
     result = main((str(f), "--skip-errors"))
 
     assert result == 1
     out, _ = capsys.readouterr()
-    assert f.read_text() == (
-        "```python\n" "f()\n" "```\n" "\n" "```python\n" "f(\n" "```\n"
-    )
+    assert f.read_text() == dedent("""\
+        ```python
+        f()
+        ```
+
+        ```python
+        f(
+        ```
+        """)
 
 
 def test_format_src_rst_jupyter_sphinx() -> None:
-    before = (
-        "hello\n" "\n" ".. jupyter-execute::\n" "\n" "    f(1,2,3)\n" "\n" "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        .. jupyter-execute::
+
+            f(1,2,3)
+
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n" "\n" ".. jupyter-execute::\n" "\n" "    f(1, 2, 3)\n" "\n" "world\n"
-    )
+    assert after == dedent("""\
+        hello
+
+        .. jupyter-execute::
+
+            f(1, 2, 3)
+
+        world
+        """)
 
 
 def test_format_src_rst_jupyter_sphinx_with_directive() -> None:
-    before = (
-        "hello\n"
-        "\n"
-        ".. jupyter-execute::\n"
-        "    :hide-code:\n"
-        "\n"
-        "    f(1,2,3)\n"
-        "\n"
-        "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        .. jupyter-execute::
+            :hide-code:
+
+            f(1,2,3)
+
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n"
-        "\n"
-        ".. jupyter-execute::\n"
-        "    :hide-code:\n"
-        "\n"
-        "    f(1, 2, 3)\n"
-        "\n"
-        "world\n"
-    )
+    assert after == dedent("""\
+        hello
+
+        .. jupyter-execute::
+            :hide-code:
+
+            f(1, 2, 3)
+
+        world
+        """)
 
 
 def test_format_src_python_docstring_markdown() -> None:
@@ -1127,267 +1240,299 @@ def test_format_src_python_docstring_rst() -> None:
 
 
 def test_format_src_rst_pycon() -> None:
-    before = (
-        "hello\n"
-        "\n"
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> f(1,2,3)\n"
-        "    output\n"
-        "\n"
-        "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        .. code-block:: pycon
+
+            >>> f(1,2,3)
+            output
+
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        "hello\n"
-        "\n"
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> f(1, 2, 3)\n"
-        "    output\n"
-        "\n"
-        "world\n"
-    )
+    assert after == dedent("""\
+        hello
+
+        .. code-block:: pycon
+
+            >>> f(1, 2, 3)
+            output
+
+        world
+        """)
 
 
 def test_format_src_rst_pycon_with_continuation() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> d = {\n"
-        '    ...   "a": 1,\n'
-        '    ...   "b": 2,\n'
-        '    ...   "c": 3,}\n'
-        "\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> d = {
+            ...   "a": 1,
+            ...   "b": 2,
+            ...   "c": 3,}
+
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> d = {\n"
-        '    ...     "a": 1,\n'
-        '    ...     "b": 2,\n'
-        '    ...     "c": 3,\n'
-        "    ... }\n"
-        "\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> d = {
+            ...     "a": 1,
+            ...     "b": 2,
+            ...     "c": 3,
+            ... }
+
+        """)
 
 
 def test_format_src_rst_pycon_adds_continuation() -> None:
-    before = ".. code-block:: pycon\n" "\n" '    >>> d = {"a": 1,"b": 2,"c": 3,}\n' "\n"
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> d = {"a": 1,"b": 2,"c": 3,}
+
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> d = {\n"
-        '    ...     "a": 1,\n'
-        '    ...     "b": 2,\n'
-        '    ...     "c": 3,\n'
-        "    ... }\n"
-        "\n"
+    assert after == dedent(
+        """\
+        .. code-block:: pycon
+
+            >>> d = {
+            ...     "a": 1,
+            ...     "b": 2,
+            ...     "c": 3,
+            ... }
+
+        """,
     )
 
 
 def test_format_src_rst_pycon_preserves_trailing_whitespace() -> None:
-    before = (
-        "hello\n"
-        "\n"
-        ".. code-block:: pycon\n"
-        "\n"
-        '    >>> d = {"a": 1, "b": 2, "c": 3}\n'
-        "\n"
-        "\n"
-        "\n"
-        "world\n"
-    )
+    before = dedent("""\
+        hello
+
+        .. code-block:: pycon
+
+            >>> d = {"a": 1, "b": 2, "c": 3}
+
+
+
+        world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_indented() -> None:
-    before = (
-        ".. versionadded:: 3.1\n"
-        "\n"
-        "    hello\n"
-        "\n"
-        "    .. code-block:: pycon\n"
-        "\n"
-        "        >>> def hi():\n"
-        "        ...     f(1,2,3)\n"
-        "        ...\n"
-        "\n"
-        "    world\n"
-    )
+    before = dedent("""\
+        .. versionadded:: 3.1
+
+            hello
+
+            .. code-block:: pycon
+
+                >>> def hi():
+                ...     f(1,2,3)
+                ...
+
+            world
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. versionadded:: 3.1\n"
-        "\n"
-        "    hello\n"
-        "\n"
-        "    .. code-block:: pycon\n"
-        "\n"
-        "        >>> def hi():\n"
-        "        ...     f(1, 2, 3)\n"
-        "        ...\n"
-        "\n"
-        "    world\n"
-    )
+    assert after == dedent("""\
+        .. versionadded:: 3.1
+
+            hello
+
+            .. code-block:: pycon
+
+                >>> def hi():
+                ...     f(1, 2, 3)
+                ...
+
+            world
+        """)
 
 
 def test_format_src_rst_pycon_code_block_is_final_line1() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...   pass\n"
-        "    ...\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...   pass
+            ...
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     pass\n"
-        "    ...\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     pass
+            ...
+        """)
 
 
 def test_format_src_rst_pycon_code_block_is_final_line2() -> None:
-    before = ".. code-block:: pycon\n" "\n" "    >>> if True:\n" "    ...   pass\n"
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...   pass
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     pass\n"
-        "    ...\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     pass
+            ...
+        """)
 
 
 def test_format_src_rst_pycon_nested_def1() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     def f(): pass\n"
-        "    ...\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     def f(): pass
+            ...
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     def f():\n"
-        "    ...         pass\n"
-        "    ...\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     def f():
+            ...         pass
+            ...
+        """)
 
 
 def test_format_src_rst_pycon_nested_def2() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     def f(): pass\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     def f(): pass
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> if True:\n"
-        "    ...     def f():\n"
-        "    ...         pass\n"
-        "    ...\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> if True:
+            ...     def f():
+            ...         pass
+            ...
+        """)
 
 
 def test_format_src_rst_pycon_empty_line() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> l = [\n"
-        "    ...\n"
-        "    ...     1,\n"
-        "    ... ]\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> l = [
+            ...
+            ...     1,
+            ... ]
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> l = [\n"
-        "    ...     1,\n"
-        "    ... ]\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> l = [
+            ...     1,
+            ... ]
+        """)
 
 
 def test_format_src_rst_pycon_preserves_output_indentation() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> 1 / 0\n"
-        "    Traceback (most recent call last):\n"
-        '      File "<stdin>", line 1, in <module>\n'
-        "    ZeroDivisionError: division by zero\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> 1 / 0
+            Traceback (most recent call last):
+
+              File "<stdin>", line 1, in <module>
+
+            ZeroDivisionError: division by zero
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_elided_traceback() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> 1 / 0\n"
-        "    Traceback (most recent call last):\n"
-        "      ...\n"
-        "    ZeroDivisionError: division by zero\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> 1 / 0
+            Traceback (most recent call last):
+              ...
+            ZeroDivisionError: division by zero
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_no_prompt() -> None:
-    before = ".. code-block:: pycon\n" "\n" "    pass\n"
+    before = dedent("""\
+        .. code-block:: pycon
+
+            pass
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_no_trailing_newline() -> None:
-    before = ".. code-block:: pycon\n" "\n" "    >>> pass"
+    before = dedent("""\
+        .. code-block:: pycon
+
+            >>> pass""")
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (".. code-block:: pycon\n" "\n" "    >>> pass\n")
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            >>> pass
+        """)
 
 
 def test_format_src_rst_pycon_comment_before_promopt() -> None:
-    before = (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    # Comment about next line\n"
-        "    >>> pass\n"
-    )
+    before = dedent("""\
+        .. code-block:: pycon
+
+            # Comment about next line
+            >>> pass
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
-    assert after == (
-        ".. code-block:: pycon\n"
-        "\n"
-        "    # Comment about next line\n"
-        "    >>> pass\n"
-    )
+    assert after == dedent("""\
+        .. code-block:: pycon
+
+            # Comment about next line
+            >>> pass
+        """)
 
 
 def test_format_src_rst_pycon_comments() -> None:
-    before = (
-        ".. blacken-docs:off\n"
-        ".. code-block:: pycon\n"
-        "\n"
-        "    >>> 'single quotes rock'\n"
-        "\n"
-        ".. blacken-docs:on\n"
-    )
+    before = dedent("""\
+        .. blacken-docs:off
+        .. code-block:: pycon
+
+            >>> 'single quotes rock'
+
+        .. blacken-docs:on
+        """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_empty() -> None:
-    before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
+    before = dedent("""\
+    some text
+
+    .. code-block:: pycon
+
+
+    some other text
+    """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
