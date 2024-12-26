@@ -10,8 +10,6 @@ from collections.abc import Generator
 from collections.abc import Sequence
 from re import Match
 
-from black import FileMode, Mode
-from black.const import DEFAULT_LINE_LENGTH
 from black.mode import TargetVersion
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
@@ -105,16 +103,19 @@ class InvalidInput(ValueError):
     """Raised when ruff fails to parse file."""
 
 
-def format_str(code: str, mode: FileMode) -> str:
+def format_str(code: str, configs: list[str]) -> str:
     """Format a code block with ruff."""
+    config_args = []
+    for config in configs:
+        config_args.extend(["--config", config])
+
     subprocess_result = subprocess.run(
         [
             "ruff",
             "format",
             "--stdin-filename",
             "file.py",
-            "--config",
-            f"line-length={mode.line_length}",
+            *config_args,
             "-",
         ],
         check=True,
@@ -134,8 +135,7 @@ class CodeBlockError:
 
 def format_file_contents(
     src: str,
-    black_mode: FileMode,
-    *,
+    configs: list[str],
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
@@ -175,7 +175,7 @@ def format_file_contents(
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, configs)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -193,7 +193,7 @@ def format_file_contents(
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, configs)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -208,7 +208,7 @@ def format_file_contents(
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, configs)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -222,7 +222,7 @@ def format_file_contents(
 
             if fragment is not None:
                 with _collect_error(match):
-                    fragment = format_str(fragment, mode=black_mode)
+                    fragment = format_str(fragment, configs)
                 fragment_lines = fragment.splitlines()
                 code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
                 for line in fragment_lines[1:]:
@@ -279,7 +279,7 @@ def format_file_contents(
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, configs)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -307,16 +307,16 @@ def format_file_contents(
 
 def format_file(
     filename: str,
-    black_mode: FileMode,
     skip_errors: bool,
     rst_literal_blocks: bool,
     check_only: bool,
+    configs: list[str],
 ) -> int:
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
     new_contents, errors = format_file_contents(
         contents,
-        black_mode,
+        configs=configs,
         rst_literal_blocks=rst_literal_blocks,
     )
     for error in errors:
@@ -337,12 +337,6 @@ def format_file(
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-l",
-        "--line-length",
-        type=int,
-        default=DEFAULT_LINE_LENGTH,
-    )
     parser.add_argument("--preview", action="store_true")
     parser.add_argument(
         "-S",
@@ -365,24 +359,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
     )
     parser.add_argument("--pyi", action="store_true")
+    parser.add_argument(
+        "--config",
+        action="append",
+        default=[],
+        help="Config to pass to ruff",
+        dest="configs",
+    )
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
-
-    black_mode = Mode(
-        target_versions=set(args.target_versions),
-        line_length=args.line_length,
-        string_normalization=not args.skip_string_normalization,
-        is_pyi=args.pyi,
-        preview=args.preview,
-    )
 
     retv = 0
     for filename in args.filenames:
         retv |= format_file(
             filename,
-            black_mode,
             skip_errors=args.skip_errors,
             rst_literal_blocks=args.rst_literal_blocks,
             check_only=args.check,
+            configs=args.configs,
         )
     return retv

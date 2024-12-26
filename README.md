@@ -101,7 +101,6 @@ git ls-files -z -- '*.md' | xargs -0 ruffen-docs
 
 Ruffen-docs currently passes the following options through to ruff:
 
-- `--line-length` - Set the line-length.
 - `--target-version` - The minimum Python version that should be supported.
 - `--preview` - Enable preview mode; enables unstable formatting. Use `--no-preview` to disable.
 - `--config`- Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `<KEY> = <VALUE>` pair (such as you might find in a `ruff.toml` configuration file) overriding a specific configuration option. Overrides of individual settings using this option always take precedence over all configuration files, including configuration files that were also specified using `--config`. Note, more than one `--config` option can be used at once.
