@@ -339,11 +339,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--preview", action="store_true")
     parser.add_argument(
-        "-S",
-        "--skip-string-normalization",
-        action="store_true",
-    )
-    parser.add_argument(
         "-t",
         "--target-version",
         action="append",
