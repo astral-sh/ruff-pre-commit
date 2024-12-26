@@ -1,4 +1,5 @@
 # /// script
+# requires-python = ">=3.12"
 # dependencies = [
 #   "packaging==23.1",
 #   "urllib3==2.0.5",
