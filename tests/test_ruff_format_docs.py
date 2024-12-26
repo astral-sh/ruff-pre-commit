@@ -349,20 +349,15 @@ def test_format_src_markdown_comments_only_off() -> None:
 
 def test_format_src_markdown_comments_multiple() -> None:
     before = dedent(
-        """\
-        "<!-- ruff-format-docs:on -->
-        "  # ignored
-        "<!-- ruff-format-docs:off -->
-        <!-- ruff-format-docs:on -->
-        <!-- ruff-format-docs:on -->
-        "  # ignored
-        "<!-- ruff-format-docs:off -->
-        <!-- ruff-format-docs:off -->
-        "  # ignored
-        "```python
-        'single quotes rock'
-        ```
-        """,  # no on comment, off until the end
+        "<!-- ruff-format-docs:on -->\n"  # ignored
+        "<!-- ruff-format-docs:off -->\n"
+        "<!-- ruff-format-docs:on -->\n"
+        "<!-- ruff-format-docs:on -->\n"  # ignored
+        "<!-- ruff-format-docs:off -->\n"
+        "<!-- ruff-format-docs:off -->\n"  # ignored
+        "```python\n"
+        "'single quotes rock'\n"
+        "```\n",  # no on comment, off until the end
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
