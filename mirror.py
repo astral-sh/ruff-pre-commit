@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "packaging==23.1",
+#   "urllib3==2.0.5",
+# ]
+# ///
 """Update the project to the latest version of ruff."""
 
 # ruff: noqa: S603, S607, PT018
