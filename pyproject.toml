@@ -10,7 +10,7 @@ version = "0.0.0"
 description = "Run the Ruff formatter on Python code blocks in documentation files."
 readme = "README.md"
 requires-python = ">=3.9"
-scripts.ruffen-docs = "ruffen_docs:main"
+scripts.ruff-format-docs = "ruff_format_docs:main"
 dependencies = [
   "ruff==0.8.4",
 ]
@@ -34,7 +34,7 @@ skip_covered = true
 branch = true
 parallel = true
 source = [
-  "ruffen_docs",
+  "ruff_format_docs",
   "tests",
 ]
 

@@ -6,7 +6,7 @@
 [![image](https://img.shields.io/pypi/pyversions/ruff/0.8.4.svg)](https://pypi.python.org/pypi/ruff)
 [![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/main/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
 
-A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/astral-sh/ruff) and ruffen-docs.
+A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/astral-sh/ruff).
 
 Distributed as a standalone repository to enable installing Ruff via prebuilt wheels from
 [PyPI](https://pypi.org/project/ruff/).
@@ -27,7 +27,7 @@ repos:
     # Run the formatter.
     - id: ruff-format
     # Run the formatter on documentation files.
-    - id: ruffen-docs
+    - id: ruff-format-docs
 ```
 
 To enable lint fixes, add the `--fix` argument to the lint hook:
@@ -44,7 +44,7 @@ repos:
     # Run the formatter.
     - id: ruff-format
     # Run the formatter on documentation files.
-    - id: ruffen-docs
+    - id: ruff-format-docs
 ```
 
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
@@ -63,7 +63,7 @@ repos:
     - id: ruff-format
       types_or: [ python, pyi ]
     # Run the formatter on documentation files.
-    - id: ruffen-docs # Ruffen-docs does not support Jupyter Notebooks.
+    - id: ruff-format-docs # ruff-format-docs does not support Jupyter Notebooks.
 ```
 
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
@@ -76,30 +76,27 @@ When running without `--fix`, Ruff's formatter hook can be placed before or afte
 `ruff format` should never introduce new lint errors, so it's safe to run Ruff's format hook _after_
 `ruff check --fix`.)
 
-## Ruffen-docs
+## Docs Formatter
 
-Ruffen-docs is a command line tool that rewrites documentation files in
-place. It is based on Blacken-docs however it uses Ruff's formatter instead of Black to format code blocks. It supports Markdown, reStructuredText, and LaTex files.
-Additionally, you can run it on Python files to reformat Markdown and
-reStructuredText within docstrings.
+The ruff docs formatter is a command line tool that rewrites documentation files in place. It is based on Blacken-docs however it uses Ruff's formatter instead of Black to format code blocks. It supports Markdown, reStructuredText, and LaTex files. Additionally, you can run it on Python files to reformat Markdown and reStructuredText within docstrings.
 
-When installed, run `ruffen-docs` with the filenames to rewrite:
+When installed, run `ruff-format-docs` with the filenames to rewrite:
 
 ```sh
-ruffen-docs README.md
+ruff-format-docs README.md
 ```
 
-If any file is modified, `ruffen-docs` exits nonzero.
+If any file is modified, `ruff-format-docs` exits nonzero.
 
-`ruffen-docs` does not have any ability to recurse through directories.
+`ruff-format-docs` does not have any ability to recurse through directories.
 Use the pre-commit integration, globbing, or another technique for
 applying to many files. For example, with `git ls-files | xargs`\_:
 
 ```sh
-git ls-files -z -- '*.md' | xargs -0 ruffen-docs
+git ls-files -z -- '*.md' | xargs -0 ruff-format-docs
 ```
 
-Ruffen-docs currently passes the following options through to ruff:
+The ruff docs formatter currently passes the following options through to ruff:
 
 - `--target-version` - The minimum Python version that should be supported.
 - `--preview` - Enable preview mode; enables unstable formatting. Use `--no-preview` to disable.
@@ -113,7 +110,7 @@ It also has the below extra options:
 
 ### Supported code block formats
 
-Ruffen-docs formats code blocks matching the following patterns.
+Ruff docs formatter formats code blocks matching the following patterns.
 
 #### Markdown
 
@@ -126,7 +123,7 @@ def hello():
 ```
 ````
 
-And "pycon" blocks:
+"pycon" blocks:
 
 ````markdown
 ```pycon
@@ -138,17 +135,25 @@ And "pycon" blocks:
 ```
 ````
 
-Prevent formatting within a block using `ruffen-docs:off` and
-`ruffen-docs:on` comments:
+And pyi blocks:
 
 ````markdown
-<!-- ruffen-docs:off -->
+```pyi
+def hello() -> None: ...
+```
+````
+
+Prevent formatting within a block using `ruff-format-docs:off` and
+`ruff-format-docs:on` comments:
+
+````markdown
+<!-- ruff-format-docs:off -->
 
 ```python
 # whatever you want
 ```
 
-<!-- ruffen-docs:on -->
+<!-- ruff-format-docs:on -->
 ````
 
 Within Python files, docstrings that contain Markdown code blocks may be
@@ -185,17 +190,17 @@ In "pycon" blocks:
     ...
 ```
 
-Prevent formatting within a block using `ruffen-docs:off` and
-`ruffen-docs:on` comments:
+Prevent formatting within a block using `ruff-format-docs:off` and
+`ruff-format-docs:on` comments:
 
 ```rst
-.. ruffen-docs:off
+.. ruff-format-docs:off
 
 .. code-block:: python
 
     # whatever you want
 
-.. ruffen-docs:on
+.. ruff-format-docs:on
 ```
 
 Use `--rst-literal-blocks` to also format [literal
@@ -257,15 +262,15 @@ def hello():
 \end{pycode}
 ```
 
-Prevent formatting within a block using `ruffen-docs:off` and
-`ruffen-docs:on` comments:
+Prevent formatting within a block using `ruff-format-docs:off` and
+`ruff-format-docs:on` comments:
 
 ```latex
-% ruffen-docs:off
+% ruff-format-docs:off
 \begin{minted}{python}
 # whatever you want
 \end{minted}
-% ruffen-docs:on
+% ruff-format-docs:on
 ```
 
 ## License

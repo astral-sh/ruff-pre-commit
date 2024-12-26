@@ -1,4 +1,4 @@
-"""Test cases for ruffen_docs."""
+"""Test cases for ruff docs formatter."""
 
 # ruff: noqa: D103
 from __future__ import annotations
@@ -6,7 +6,7 @@ from __future__ import annotations
 from textwrap import dedent
 from typing import TYPE_CHECKING
 
-from ruffen_docs import FormatterConfig, format_file_contents, main
+from ruff_format_docs import FormatterConfig, format_file_contents, main
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -243,11 +243,11 @@ def test_format_src_markdown_pycon_twice() -> None:
 
 def test_format_src_markdown_comments_disable() -> None:
     before = dedent("""\
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```python
         'single quotes rock'
         ```
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -255,22 +255,22 @@ def test_format_src_markdown_comments_disable() -> None:
 
 def test_format_src_markdown_comments_disabled_enabled() -> None:
     before = dedent("""\
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```python
         'single quotes rock'
         ```
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         ```python
         'double quotes rock'
         ```
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == dedent("""\
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```python
         'single quotes rock'
         ```
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         ```python
         "double quotes rock"
         ```
@@ -279,16 +279,16 @@ def test_format_src_markdown_comments_disabled_enabled() -> None:
 
 def test_format_src_markdown_comments_before() -> None:
     before = dedent("""\
-        <!-- blacken-docs:off -->
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:on -->
         ```python
         'double quotes rock'
         ```
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == dedent("""\
-        <!-- blacken-docs:off -->
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:on -->
         ```python
         "double quotes rock"
         ```
@@ -300,23 +300,23 @@ def test_format_src_markdown_comments_after() -> None:
         ```python
         'double quotes rock'
         ```
-        <!-- blacken-docs:off -->
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:on -->
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == dedent("""\
         ```python
         "double quotes rock"
         ```
-        <!-- blacken-docs:off -->
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:on -->
         """)
 
 
 def test_format_src_markdown_comments_only_on() -> None:
     # fmt: off
     before = dedent("""\
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         ```python
         'double quotes rock'
         ```
@@ -324,7 +324,7 @@ def test_format_src_markdown_comments_only_on() -> None:
     )
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == dedent("""\
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         ```python
         "double quotes rock"
         ```
@@ -336,7 +336,7 @@ def test_format_src_markdown_comments_only_on() -> None:
 def test_format_src_markdown_comments_only_off() -> None:
     # fmt: off
     before = dedent("""\
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```python
         'single quotes rock'
         ```
@@ -350,14 +350,14 @@ def test_format_src_markdown_comments_only_off() -> None:
 def test_format_src_markdown_comments_multiple() -> None:
     before = dedent(
         """\
-        "<!-- blacken-docs:on -->
+        "<!-- ruff-format-docs:on -->
         "  # ignored
-        "<!-- blacken-docs:off -->
-        <!-- blacken-docs:on -->
-        <!-- blacken-docs:on -->
+        "<!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:on -->
+        <!-- ruff-format-docs:on -->
         "  # ignored
-        "<!-- blacken-docs:off -->
-        <!-- blacken-docs:off -->
+        "<!-- ruff-format-docs:off -->
+        <!-- ruff-format-docs:off -->
         "  # ignored
         "```python
         'single quotes rock'
@@ -371,11 +371,11 @@ def test_format_src_markdown_comments_multiple() -> None:
 def test_on_off_comments_in_code_blocks() -> None:
     before = dedent("""\
         ````md
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```python
         f(1,2,3)
         ```
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         ````
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
@@ -384,11 +384,11 @@ def test_on_off_comments_in_code_blocks() -> None:
 
 def test_format_src_markdown_comments_disable_pycon() -> None:
     before = dedent("""\
-        <!-- blacken-docs:off -->
+        <!-- ruff-format-docs:off -->
         ```pycon
         >>> 'single quotes rock'
         ```
-        <!-- blacken-docs:on -->
+        <!-- ruff-format-docs:on -->
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -498,11 +498,11 @@ def test_format_src_latex_minted_pycon_indented() -> None:
 
 def test_format_src_latex_minted_comments_off() -> None:
     before = dedent("""\
-        % blacken-docs:off
+        % ruff-format-docs:off
         \\begin{minted}{python}
         'single quotes rock'
         \\end{minted}
-        % blacken-docs:on
+        % ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -510,11 +510,11 @@ def test_format_src_latex_minted_comments_off() -> None:
 
 def test_format_src_latex_minted_comments_off_pycon() -> None:
     before = dedent("""\
-        % blacken-docs:off
+        % ruff-format-docs:off
         \\begin{minted}{pycon}
         >>> 'single quotes rock'
         \\end{minted}
-        % blacken-docs:on
+        % ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -542,11 +542,11 @@ def test_format_src_pythontex() -> None:
 
 def test_format_src_pythontex_comments_off() -> None:
     before = dedent("""\
-        % blacken-docs:off
+        % ruff-format-docs:off
         \\begin{pyblock}
         f(1,2,3)
         \\end{pyblock}
-        % blacken-docs:on
+        % ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -668,12 +668,12 @@ def test_format_src_rst_literal_blocks_empty() -> None:
 
 def test_format_src_rst_literal_blocks_comments() -> None:
     before = dedent("""\
-        .. blacken-docs:off
+        .. ruff-format-docs:off
         Example::
 
             'single quotes rock'
 
-        .. blacken-docs:on
+        .. ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE, rst_literal_blocks=True)
     assert after == before
@@ -792,7 +792,7 @@ def test_format_src_rst_with_highlight_directives() -> None:
 
 def test_format_src_rst_python_inside_non_python_code_block() -> None:
     before = dedent("""\
-        blacken-docs does changes like:
+        ruff-format-docs does changes like:
 
         .. code-block:: diff
 
@@ -808,12 +808,12 @@ def test_format_src_rst_python_inside_non_python_code_block() -> None:
 
 def test_format_src_rst_python_comments() -> None:
     before = dedent("""\
-        .. blacken-docs:off
+        .. ruff-format-docs:off
         .. code-block:: python
 
             'single quotes rock'
 
-        .. blacken-docs:on
+        .. ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
@@ -1421,12 +1421,12 @@ def test_format_src_rst_pycon_comment_before_promopt() -> None:
 
 def test_format_src_rst_pycon_comments() -> None:
     before = dedent("""\
-        .. blacken-docs:off
+        .. ruff-format-docs:off
         .. code-block:: pycon
 
             >>> 'single quotes rock'
 
-        .. blacken-docs:on
+        .. ruff-format-docs:on
         """)
     after, _ = format_file_contents(before, FORMATTER_MODE)
     assert after == before
