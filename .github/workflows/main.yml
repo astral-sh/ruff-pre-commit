@@ -24,7 +24,7 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - run: uv run mirror.py
+      - run: uv run --no-project mirror.py
 
       - name: check for unpushed commits
         id: check_unpushed
