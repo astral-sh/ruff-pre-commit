@@ -3,13 +3,14 @@ from __future__ import annotations
 import argparse
 import contextlib
 import re
+import subprocess
 import textwrap
 from bisect import bisect
 from collections.abc import Generator
 from collections.abc import Sequence
 from re import Match
 
-from black import FileMode, Mode, format_str
+from black import FileMode, Mode
 from black.const import DEFAULT_LINE_LENGTH
 from black.mode import TargetVersion
 
@@ -98,6 +99,31 @@ ON_OFF_COMMENT_RE = re.compile(
     rf"(?:^\s*% {ON_OFF}$)",
     re.MULTILINE,
 )
+
+
+class InvalidInput(ValueError):
+    """Raised when ruff fails to parse file."""
+
+
+def format_str(code: str, mode: FileMode) -> str:
+    """Format a code block with ruff."""
+    subprocess_result = subprocess.run(
+        [
+            "ruff",
+            "format",
+            "--stdin-filename",
+            "file.py",
+            "--config",
+            f"line-length={mode.line_length}",
+            "-",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        input=code,
+    )
+
+    return subprocess_result.stdout
 
 
 class CodeBlockError:
