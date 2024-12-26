@@ -1,15 +1,15 @@
 import re
 import subprocess
 import tomllib
-import typing
 from pathlib import Path
+from typing import Any, Sequence
 
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
 
 
-def main():
+def main() -> None:
     with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
         pyproject = tomllib.load(f)
 
@@ -36,7 +36,7 @@ def get_all_versions() -> list[Version]:
     return sorted(versions)
 
 
-def get_current_version(pyproject: dict) -> Version:
+def get_current_version(pyproject: dict[str, Any]) -> Version:
     requirements = [Requirement(d) for d in pyproject["project"]["dependencies"]]
     requirement = next((r for r in requirements if r.name == "ruff"), None)
     assert requirement is not None, "pyproject.toml does not have ruff requirement"
@@ -49,7 +49,7 @@ def get_current_version(pyproject: dict) -> Version:
     return Version(specifiers[0].version)
 
 
-def process_version(version: Version) -> typing.Sequence[str]:
+def process_version(version: Version) -> Sequence[str]:
     def replace_pyproject_toml(content: str) -> str:
         return re.sub(r'"ruff==.*"', f'"ruff=={version}"', content)
 
