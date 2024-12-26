@@ -865,7 +865,7 @@ def test_integration_preview(tmp_path: Path) -> None:
 
 
 @pytest.mark.xfail(reason="Need to decide how to handle pyi files")
-def test_integration_pyi(tmp_path: Path) -> None:
+def test_integration_pyi(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         dedent(
@@ -894,9 +894,9 @@ def test_integration_pyi(tmp_path: Path) -> None:
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
-def test_integration_py36(tmp_path: Path) -> None:
+def test_integration_py36(tmp_path: Path) -> None:  # pragma: no cover# pragma: no cover
     f = tmp_path / "f.md"
-    f.write_text(
+    f.write_text(  # pragma: no cover
         "```python\n"
         "def very_very_long_function_name(\n"
         "    very_very_very_very_very_very,\n"
@@ -926,9 +926,9 @@ def test_integration_py36(tmp_path: Path) -> None:
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
-def test_integration_filename_last(tmp_path: Path) -> None:
+def test_integration_filename_last(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
-    f.write_text(
+    f.write_text(  # pragma: no cover
         "```python\n"
         "def very_very_long_function_name(\n"
         "    very_very_very_very_very_very,\n"
@@ -960,7 +960,9 @@ def test_integration_filename_last(tmp_path: Path) -> None:
 @pytest.mark.xfail(
     reason="Need to decide if we want to handle multiple target versions"
 )
-def test_integration_multiple_target_version(tmp_path: Path) -> None:
+def test_integration_multiple_target_version(
+    tmp_path: Path,
+) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n"
@@ -983,7 +985,9 @@ def test_integration_multiple_target_version(tmp_path: Path) -> None:
 
 
 @pytest.mark.xfail(reason="Need to if we want to support this")
-def test_integration_skip_string_normalization(tmp_path: Path) -> None:
+def test_integration_skip_string_normalization(
+    tmp_path: Path,
+) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
         "```python\n" "f('hi')\n" "```\n",

@@ -12,16 +12,48 @@ readme = "README.md"
 requires-python = ">=3.9"
 scripts.ruffen-docs = "ruffen_docs:main"
 dependencies = [
-    "ruff==0.8.4",
+  "ruff==0.8.4",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "packaging~=23.1",
-    "urllib3>=2.0.5,<3.0.0",
+  "packaging~=23.1",
+  "urllib3>=2.0.5,<3.0.0",
+]
+
+[tool.coverage.report]
+fail_under = 100
+omit = ["mirror.py"]
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+  "ruffen_docs",
+  "tests",
+]
+
+[tool.coverage.paths]
+source = [
+  "src",
 ]
 
 [tool.mypy]
 mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
 strict = true
 warn_unreachable = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--no-cov-on-fail", # Do not report coverage if tests fail.
+  "--strict-config", # Any warnings encountered while parsing the `pytest` section of the configuration file raise errors.
+  "--strict-markers", # Require markers to be registered in the `markers` section below
+]
+filterwarnings = [
+  "error", # Convert warnings to errors
+]
+python_files = "test_*.py"
+testpaths = ["tests"]
+xfail_strict = true
