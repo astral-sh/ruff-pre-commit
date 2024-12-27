@@ -1,3 +1,6 @@
+default_language_version:
+  python: python3.11
+
 repos:
   - repo: meta
     hooks:
@@ -48,6 +51,14 @@ repos:
         additional_dependencies:
           - pytest==8.3.3
           - urllib3==2.0.5
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-clean-block==0.1.2
+        args: ["--ignore=E,F,W,C90"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.4
