@@ -4,9 +4,3 @@ version = "0.0.0"
 dependencies = [
     "ruff==0.8.4",
 ]
-
-[project.optional-dependencies]
-dev = [
-    "packaging~=23.1",
-    "urllib3>=2.0.5,<3.0.0",
-]
