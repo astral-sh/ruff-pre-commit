@@ -5,3 +5,8 @@ requires-python = ">=3.9"
 dependencies = [
     "ruff==0.8.4",
 ]
+
+[dependency-groups]
+lint = [
+    "pre-commit==4.0.1",
+]
