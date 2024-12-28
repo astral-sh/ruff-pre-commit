@@ -1,0 +1,91 @@
+# # All hooks in this repo align with the main ruff repo unless otherwise noted.
+repos:
+  - repo: meta
+    hooks:
+      # Not in the main ruff repo but useful for checking that the current hooks are relevant
+      - id: check-hooks-apply
+      - id: check-useless-excludes
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # The following hooks are not in the main ruff repo but are useful to checking files are formatted consistently
+      - id: check-case-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.23
+    hooks:
+      - id: validate-pyproject
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.21
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          # Additional dependencies added to align with the main ruff repo even though mkdocs is not currently used
+          - mdformat-mkdocs==4.0.0
+          - mdformat-footnote==0.1.1
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+      - id: markdownlint-fix
+
+  - repo: https://github.com/adamchainz/blacken-docs
+    rev: 1.19.1
+    hooks:
+      - id: blacken-docs
+        args: ["--pyi", "--line-length", "130"]
+        additional_dependencies:
+          - black==24.10.0
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.28.4
+    hooks:
+      - id: typos
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Prettier
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.4.2
+    hooks:
+      - id: prettier
+        types: [yaml]
+
+  # zizmor detects security vulnerabilities in GitHub Actions workflows.
+  - repo: https://github.com/woodruffw/zizmor-pre-commit
+    rev: v0.10.0
+    hooks:
+      - id: zizmor
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.30.0
+    hooks:
+      - id: check-github-workflows
+
+  # `actionlint` hook, for verifying correct syntax in GitHub Actions workflows.
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.4
+    hooks:
+      - id: actionlint
+        stages:
+          # This hook is disabled by default, since it's quite slow.
+          # To run all hooks *including* this hook, use `uvx pre-commit run -a --hook-stage=manual`.
+          # To run *just* this hook, use `uvx pre-commit run -a actionlint --hook-stage=manual`.
+          - manual
+        args:
+          - "-ignore=SC2129" # ignorable stylistic lint from shellcheck
+          - "-ignore=SC2016" # another shellcheck lint: seems to have false positives?
+        additional_dependencies:
+          # actionlint has a shellcheck integration which extracts shell scripts in `run:` steps from GitHub Actions
+          # and checks these with shellcheck. This is arguably its most useful feature,
+          # but the integration only works if shellcheck is installed
+          - "github.com/wasilibs/go-shellcheck/cmd/shellcheck@v0.10.0"
