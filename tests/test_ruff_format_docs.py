@@ -282,32 +282,29 @@ def test_format_src_markdown_comments_after() -> None:
 
 
 def test_format_src_markdown_comments_only_on() -> None:
-    # fmt: off
     before = dedent("""\
         <!-- blacken-docs:on -->
         ```python
         'double quotes rock'
         ```
-        """    )
+        """)
     after, _ = format_file_contents(before, FORMATTER_CONFIG)
     assert after == dedent("""\
         <!-- blacken-docs:on -->
         ```python
         "double quotes rock"
         ```
-        """    )
-    # fmt: on
+        """)
 
 
 def test_format_src_markdown_comments_only_off() -> None:
-    # fmt: off
     before = dedent("""\
         <!-- blacken-docs:off -->
         ```python
         'single quotes rock'
         ```
-        """    )
-    # fmt: on
+        """)
+
     after, _ = format_file_contents(before, FORMATTER_CONFIG)
     assert after == before
 
@@ -477,21 +474,19 @@ def test_format_src_latex_minted_comments_off_pycon() -> None:
 
 
 def test_format_src_pythontex() -> None:
-    # fmt: off
     before = dedent("""\
         hello
         \\begin{pyblock}
         f(1,2,3)
         \\end{pyblock}
-        world!"""    )
+        world!""")
     after, _ = format_file_contents(before, FORMATTER_CONFIG)
     assert after == dedent("""\
         hello
         \\begin{pyblock}
         f(1, 2, 3)
         \\end{pyblock}
-        world!"""    )
-    # fmt: on
+        world!""")
 
 
 def test_format_src_pythontex_comments_off() -> None:
