@@ -114,7 +114,7 @@ class CodeBlockError:
 
 def format_file_contents(  # noqa: PLR0915
     src: str,
-    black_mode: FileMode,
+    config: FileMode,
     *,
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
@@ -155,7 +155,7 @@ def format_file_contents(  # noqa: PLR0915
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, mode=config)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
@@ -173,7 +173,7 @@ def format_file_contents(  # noqa: PLR0915
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, mode=config)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -188,7 +188,7 @@ def format_file_contents(  # noqa: PLR0915
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, mode=config)
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -202,7 +202,7 @@ def format_file_contents(  # noqa: PLR0915
 
             if fragment is not None:
                 with _collect_error(match):
-                    fragment = format_str(fragment, mode=black_mode)
+                    fragment = format_str(fragment, mode=config)
                 fragment_lines = fragment.splitlines()
                 code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
                 for line in fragment_lines[1:]:
@@ -260,7 +260,7 @@ def format_file_contents(  # noqa: PLR0915
             return match[0]
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=black_mode)
+            code = format_str(code, mode=config)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
