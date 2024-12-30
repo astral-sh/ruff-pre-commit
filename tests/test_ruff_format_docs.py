@@ -7,21 +7,21 @@ from __future__ import annotations
 from textwrap import dedent
 from typing import TYPE_CHECKING
 
-import black
+from black import FileMode
 from black.const import DEFAULT_LINE_LENGTH
 
-import ruff_format_docs
+from ruff_format_docs import format_file_contents, main
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from _pytest.capture import CaptureFixture
 
-BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
+BLACK_MODE = FileMode(line_length=DEFAULT_LINE_LENGTH)
 
 
 def test_format_src_trivial() -> None:
-    after, _ = ruff_format_docs.format_str("", BLACK_MODE)
+    after, _ = format_file_contents("", BLACK_MODE)
     assert after == ""
 
 
@@ -33,7 +33,7 @@ def test_format_src_markdown_simple() -> None:
         ```
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         ```python
@@ -51,7 +51,7 @@ def test_format_src_markdown_leading_whitespace() -> None:
         ```
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         ```   python
@@ -70,7 +70,7 @@ def test_format_src_markdown_python_after_newline() -> None:
         ```
         """,
     )
-    after, errors = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, errors = format_file_contents(before, BLACK_MODE)
     assert errors == []
     assert after == before
 
@@ -83,7 +83,7 @@ def test_format_src_markdown_short_name() -> None:
         ```
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         ```   py
@@ -101,7 +101,7 @@ def test_format_src_markdown_options() -> None:
         ```
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         ```python title='example.py'
@@ -118,7 +118,7 @@ def test_format_src_markdown_trailing_whitespace() -> None:
         f(1,2,3)
         ```    \n""",
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         ```python
@@ -137,7 +137,7 @@ def test_format_src_indented_markdown() -> None:
         - also this
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         - do this pls:
@@ -160,7 +160,7 @@ def test_format_src_markdown_pycon() -> None:
         "```\n"
         "world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == ("hello\n\n```pycon\n\n>>> f(1, 2, 3)\noutput\n```\nworld\n")
 
 
@@ -173,7 +173,7 @@ def test_format_src_markdown_pycon_after_newline() -> None:
         ```
         """,
     )
-    after, errors = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, errors = format_file_contents(before, BLACK_MODE)
     assert errors == []
     assert after == before
 
@@ -189,7 +189,7 @@ def test_format_src_markdown_pycon_options() -> None:
         "```\n"
         "world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "hello\n"
         "\n"
@@ -214,7 +214,7 @@ def test_format_src_markdown_pycon_twice() -> None:
         "output\n"
         "```\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "```pycon\n"
         ">>> f(1, 2, 3)\n"
@@ -236,7 +236,7 @@ def test_format_src_markdown_comments_disable() -> None:
         "```\n"
         "<!-- blacken-docs:on -->\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -251,7 +251,7 @@ def test_format_src_markdown_comments_disabled_enabled() -> None:
         "'double quotes rock'\n"
         "```\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "<!-- blacken-docs:off -->\n"
         "```python\n"
@@ -272,7 +272,7 @@ def test_format_src_markdown_comments_before() -> None:
         "'double quotes rock'\n"
         "```\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "<!-- blacken-docs:off -->\n"
         "<!-- blacken-docs:on -->\n"
@@ -290,7 +290,7 @@ def test_format_src_markdown_comments_after() -> None:
         "<!-- blacken-docs:off -->\n"
         "<!-- blacken-docs:on -->\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "```python\n"
         '"double quotes rock"\n'
@@ -308,7 +308,7 @@ def test_format_src_markdown_comments_only_on() -> None:
         "'double quotes rock'\n"
         "```\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "<!-- blacken-docs:on -->\n"
         "```python\n"
@@ -327,7 +327,7 @@ def test_format_src_markdown_comments_only_off() -> None:
         "```\n"
     )
     # fmt: on
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -343,7 +343,7 @@ def test_format_src_markdown_comments_multiple() -> None:
         "'single quotes rock'\n"
         "```\n"  # no on comment, off until the end
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -357,7 +357,7 @@ def test_on_off_comments_in_code_blocks() -> None:
         "<!-- blacken-docs:on -->\n"
         "````\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -369,13 +369,13 @@ def test_format_src_markdown_comments_disable_pycon() -> None:
         "```\n"
         "<!-- blacken-docs:on -->\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_latex_minted() -> None:
     before = "hello\n\\begin{minted}{python}\nf(1,2,3)\n\\end{minted}\nworld!"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "hello\n\\begin{minted}{python}\nf(1, 2, 3)\n\\end{minted}\nworld!"
     )
@@ -392,7 +392,7 @@ def test_format_src_latex_minted_opt() -> None:
         "\\end{minted}\n"
         "done"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "maths!\n"
         "\\begin{minted}[mathescape]{python}\n"
@@ -418,7 +418,7 @@ def test_format_src_latex_minted_indented() -> None:
         world!
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         hello
@@ -440,7 +440,7 @@ def test_format_src_latex_minted_pycon() -> None:
         "\\end{minted}\n"
         "Following text."
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "Preceding text\n"
         "\\begin{minted}[gobble=2,showspaces]{pycon}\n"
@@ -462,7 +462,7 @@ def test_format_src_latex_minted_pycon_indented() -> None:
         "  \\end{minted}\n"
         "Following text."
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "Preceding text\n"
         "  \\begin{minted}{pycon}\n"
@@ -481,7 +481,7 @@ def test_format_src_latex_minted_comments_off() -> None:
         "\\end{minted}\n"
         "% blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -493,7 +493,7 @@ def test_format_src_latex_minted_comments_off_pycon() -> None:
         "\\end{minted}\n"
         "% blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -506,7 +506,7 @@ def test_format_src_pythontex() -> None:
         "\\end{pyblock}\n"
         "world!"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "hello\n"
         "\\begin{pyblock}\n"
@@ -525,19 +525,19 @@ def test_format_src_pythontex_comments_off() -> None:
         "\\end{pyblock}\n"
         "% blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_rst() -> None:
     before = "hello\n\n.. code-block:: python\n\n    f(1,2,3)\n\nworld\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == ("hello\n\n.. code-block:: python\n\n    f(1, 2, 3)\n\nworld\n")
 
 
 def test_format_src_rst_empty() -> None:
     before = "some text\n\n.. code-block:: python\n\n\nsome other text\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -551,7 +551,7 @@ def test_format_src_rst_literal_blocks() -> None:
         world
         """,
     )
-    after, _ = ruff_format_docs.format_str(
+    after, _ = format_file_contents(
         before,
         BLACK_MODE,
         rst_literal_blocks=True,
@@ -574,7 +574,7 @@ def test_format_src_rst_literal_block_empty() -> None:
         world
         """,
     )
-    after, _ = ruff_format_docs.format_str(
+    after, _ = format_file_contents(
         before,
         BLACK_MODE,
         rst_literal_blocks=True,
@@ -592,7 +592,7 @@ def test_format_src_rst_literal_blocks_nested() -> None:
             don't hello too much
         """,
     )
-    after, errors = ruff_format_docs.format_str(
+    after, errors = format_file_contents(
         before,
         BLACK_MODE,
         rst_literal_blocks=True,
@@ -611,7 +611,7 @@ def test_format_src_rst_literal_blocks_empty() -> None:
             There was no example.
         """,
     )
-    after, errors = ruff_format_docs.format_str(
+    after, errors = format_file_contents(
         before,
         BLACK_MODE,
         rst_literal_blocks=True,
@@ -629,7 +629,7 @@ def test_format_src_rst_literal_blocks_comments() -> None:
         "\n"
         ".. blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE, rst_literal_blocks=True)
+    after, _ = format_file_contents(before, BLACK_MODE, rst_literal_blocks=True)
     assert after == before
 
 
@@ -654,7 +654,7 @@ def test_format_src_rst_sphinx_doctest() -> None:
         "   parrot.voom( 3000 )\n"
         "\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. testsetup:: group1\n"
         "\n"
@@ -693,7 +693,7 @@ def test_format_src_rst_indented() -> None:
             world
         """,
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         """\
         .. versionadded:: 3.1
@@ -712,7 +712,7 @@ def test_format_src_rst_indented() -> None:
 
 def test_format_src_rst_code_block_indent() -> None:
     before = ".. code-block:: python\n   \n   f(1,2,3)\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == ".. code-block:: python\n   \n   f(1, 2, 3)\n"
 
 
@@ -725,7 +725,7 @@ def test_format_src_rst_with_highlight_directives() -> None:
         "    def foo():\n"
         "        bar(1,2,3)\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: python\n"
         "    :lineno-start: 10\n"
@@ -747,7 +747,7 @@ def test_format_src_rst_python_inside_non_python_code_block() -> None:
         "    -    'Hello World'\n"
         '    +    "Hello World"\n'
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -760,7 +760,7 @@ def test_format_src_rst_python_comments() -> None:
         "\n"
         ".. blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -770,7 +770,7 @@ def test_integration_ok(tmp_path: Path, capsys: CaptureFixture[str]) -> None:
         "```python\nf(1, 2, 3)\n```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
 
     assert result == 0
     assert not capsys.readouterr()[1]
@@ -783,7 +783,7 @@ def test_integration_modifies(tmp_path: Path, capsys: CaptureFixture[str]) -> No
         "```python\nf(1,2,3)\n```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
 
     assert result == 1
     out, _ = capsys.readouterr()
@@ -799,10 +799,10 @@ def test_integration_line_length(tmp_path: Path) -> None:
         "```\n",
     )
 
-    result = ruff_format_docs.main((str(f), "--line-length=80"))
+    result = main((str(f), "--line-length=80"))
     assert result == 0
 
-    result2 = ruff_format_docs.main((str(f), "--line-length=50"))
+    result2 = main((str(f), "--line-length=50"))
     assert result2 == 1
     assert f.read_text() == (
         "```python\n"
@@ -825,7 +825,7 @@ def test_integration_check(tmp_path: Path) -> None:
     )
     f.write_text(text)
 
-    result = ruff_format_docs.main((str(f), "--check"))
+    result = main((str(f), "--check"))
 
     assert result == 1
     assert f.read_text() == text
@@ -843,7 +843,7 @@ def test_integration_preview(tmp_path: Path) -> None:
         ),
     )
 
-    result = ruff_format_docs.main((str(f), "--preview"))
+    result = main((str(f), "--preview"))
 
     assert result == 1
     assert f.read_text() == dedent(
@@ -870,7 +870,7 @@ def test_integration_pyi(tmp_path: Path) -> None:
         ),
     )
 
-    result = ruff_format_docs.main((str(f), "--pyi"))
+    result = main((str(f), "--pyi"))
 
     assert result == 1
     assert f.read_text() == dedent(
@@ -896,10 +896,10 @@ def test_integration_py36(tmp_path: Path) -> None:
         "```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
     assert result == 0
 
-    result2 = ruff_format_docs.main((str(f), "--target-version=py36"))
+    result2 = main((str(f), "--target-version=py36"))
 
     assert result2 == 1
     assert f.read_text() == (
@@ -927,10 +927,10 @@ def test_integration_filename_last(tmp_path: Path) -> None:
         "```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
     assert result == 0
 
-    result2 = ruff_format_docs.main(("--target-version", "py36", str(f)))
+    result2 = main(("--target-version", "py36", str(f)))
 
     assert result2 == 1
     assert f.read_text() == (
@@ -958,10 +958,10 @@ def test_integration_multiple_target_version(tmp_path: Path) -> None:
         "```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
     assert result == 0
 
-    result2 = ruff_format_docs.main(
+    result2 = main(
         ("--target-version", "py35", "--target-version", "py36", str(f)),
     )
     assert result2 == 0
@@ -973,7 +973,7 @@ def test_integration_skip_string_normalization(tmp_path: Path) -> None:
         "```python\nf('hi')\n```\n",
     )
 
-    result = ruff_format_docs.main((str(f), "--skip-string-normalization"))
+    result = main((str(f), "--skip-string-normalization"))
 
     assert result == 0
     assert f.read_text() == ("```python\nf('hi')\n```\n")
@@ -985,7 +985,7 @@ def test_integration_syntax_error(tmp_path: Path, capsys: CaptureFixture[str]) -
         "```python\nf(\n```\n",
     )
 
-    result = ruff_format_docs.main((str(f),))
+    result = main((str(f),))
 
     assert result == 2
     out, _ = capsys.readouterr()
@@ -1002,7 +1002,7 @@ def test_integration_ignored_syntax_error(
         "```python\nf( )\n```\n\n```python\nf(\n```\n",
     )
 
-    result = ruff_format_docs.main((str(f), "--skip-errors"))
+    result = main((str(f), "--skip-errors"))
 
     assert result == 1
     out, _ = capsys.readouterr()
@@ -1011,7 +1011,7 @@ def test_integration_ignored_syntax_error(
 
 def test_format_src_rst_jupyter_sphinx() -> None:
     before = "hello\n\n.. jupyter-execute::\n\n    f(1,2,3)\n\nworld\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == ("hello\n\n.. jupyter-execute::\n\n    f(1, 2, 3)\n\nworld\n")
 
 
@@ -1026,7 +1026,7 @@ def test_format_src_rst_jupyter_sphinx_with_directive() -> None:
         "\n"
         "world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "hello\n"
         "\n"
@@ -1053,7 +1053,7 @@ def test_format_src_python_docstring_markdown() -> None:
             pass
         ''',
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         '''\
         def f():
@@ -1083,7 +1083,7 @@ def test_format_src_python_docstring_rst() -> None:
             pass
         ''',
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == dedent(
         '''\
         def f():
@@ -1110,7 +1110,7 @@ def test_format_src_rst_pycon() -> None:
         "\n"
         "world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         "hello\n"
         "\n"
@@ -1133,7 +1133,7 @@ def test_format_src_rst_pycon_with_continuation() -> None:
         '    ...   "c": 3,}\n'
         "\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1148,7 +1148,7 @@ def test_format_src_rst_pycon_with_continuation() -> None:
 
 def test_format_src_rst_pycon_adds_continuation() -> None:
     before = """.. code-block:: pycon\n\n    >>> d = {"a": 1,"b": 2,"c": 3,}\n\n"""
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1173,7 +1173,7 @@ def test_format_src_rst_pycon_preserves_trailing_whitespace() -> None:
         "\n"
         "world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -1191,7 +1191,7 @@ def test_format_src_rst_pycon_indented() -> None:
         "\n"
         "    world\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. versionadded:: 3.1\n"
         "\n"
@@ -1215,7 +1215,7 @@ def test_format_src_rst_pycon_code_block_is_final_line1() -> None:
         "    ...   pass\n"
         "    ...\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1227,7 +1227,7 @@ def test_format_src_rst_pycon_code_block_is_final_line1() -> None:
 
 def test_format_src_rst_pycon_code_block_is_final_line2() -> None:
     before = ".. code-block:: pycon\n\n    >>> if True:\n    ...   pass\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1245,7 +1245,7 @@ def test_format_src_rst_pycon_nested_def1() -> None:
         "    ...     def f(): pass\n"
         "    ...\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1263,7 +1263,7 @@ def test_format_src_rst_pycon_nested_def2() -> None:
         "    >>> if True:\n"
         "    ...     def f(): pass\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1283,7 +1283,7 @@ def test_format_src_rst_pycon_empty_line() -> None:
         "    ...     1,\n"
         "    ... ]\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1302,7 +1302,7 @@ def test_format_src_rst_pycon_preserves_output_indentation() -> None:
         '      File "<stdin>", line 1, in <module>\n'
         "    ZeroDivisionError: division by zero\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
@@ -1315,19 +1315,19 @@ def test_format_src_rst_pycon_elided_traceback() -> None:
         "      ...\n"
         "    ZeroDivisionError: division by zero\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_no_prompt() -> None:
     before = ".. code-block:: pycon\n\n    pass\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_no_trailing_newline() -> None:
     before = ".. code-block:: pycon\n\n    >>> pass"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (".. code-block:: pycon\n\n    >>> pass\n")
 
 
@@ -1338,7 +1338,7 @@ def test_format_src_rst_pycon_comment_before_promopt() -> None:
         "    # Comment about next line\n"
         "    >>> pass\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
         "\n"
@@ -1356,11 +1356,11 @@ def test_format_src_rst_pycon_comments() -> None:
         "\n"
         ".. blacken-docs:on\n"
     )
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
 
 
 def test_format_src_rst_pycon_empty() -> None:
     before = "some text\n\n.. code-block:: pycon\n\n\nsome other text\n"
-    after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
+    after, _ = format_file_contents(before, BLACK_MODE)
     assert after == before
