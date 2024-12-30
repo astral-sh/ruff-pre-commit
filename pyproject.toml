@@ -11,6 +11,11 @@ lint = [
     "pre-commit==4.0.1",
 ]
 
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
+strict = true
+warn_unreachable = true
+
 [tool.ruff]
 target-version = "py39"
 
@@ -23,6 +28,7 @@ select = [
     "N", # pep8-naming
     "D", # pydocstyle
     "UP", # pyupgrade
+    "ANN", # flake8-annotations
     "BLE", # flake8-blind-except
     "B", # flake8-bugbear
     "A", # flake8-builtins
@@ -34,6 +40,7 @@ select = [
     "RSE", # flake8-raise
     "RET", # flake8-return
     "SIM", # flake8-simplify
+    "TC", # flake8-type-checking
     "ARG", # flake8-unused-arguments
     "PTH", # flake8-use-pathlib
     "TD", # flake8-todos
