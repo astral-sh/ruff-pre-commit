@@ -5,12 +5,16 @@ import contextlib
 import re
 import textwrap
 from bisect import bisect
-from collections.abc import Generator, Sequence
+from pathlib import Path
 from re import Match
+from typing import TYPE_CHECKING
 
 import black
 from black.const import DEFAULT_LINE_LENGTH
 from black.mode import TargetVersion
+
+if TYPE_CHECKING:
+    from collections.abc import Generator, Sequence
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
 PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
@@ -100,17 +104,21 @@ ON_OFF_COMMENT_RE = re.compile(
 
 
 class CodeBlockError:
+    """An error that occurred while formatting a code block."""
+
     def __init__(self, offset: int, exc: Exception) -> None:
+        """Initialize a CodeBlockError."""
         self.offset = offset
         self.exc = exc
 
 
-def format_str(
+def format_str(  # noqa: PLR0915
     src: str,
     black_mode: black.FileMode,
     *,
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
+    """Format all code blocks in a file."""
     errors: list[CodeBlockError] = []
 
     off_ranges = []
@@ -139,7 +147,7 @@ def format_str(
     def _collect_error(match: Match[str]) -> Generator[None]:
         try:
             yield
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             errors.append(CodeBlockError(match.start(), e))
 
     def _md_match(match: Match[str]) -> str:
@@ -214,7 +222,8 @@ def format_str(
 
         indentation: int | None = None
         for line in match["code"].splitlines():
-            orig_line, line = line, line.lstrip()
+            orig_line = line
+            line = line.lstrip()  # noqa: PLW2901
             if indentation is None and line:
                 indentation = len(orig_line) - len(line)
             continuation_match = PYCON_CONTINUATION_RE.match(line)
@@ -278,13 +287,14 @@ def format_str(
 
 
 def format_file(
-    filename: str,
+    file: Path,
     black_mode: black.FileMode,
     skip_errors: bool,
     rst_literal_blocks: bool,
     check_only: bool,
 ) -> int:
-    with open(filename, encoding="UTF-8") as f:
+    """Format a file with ruff."""
+    with file.open(encoding="UTF-8") as f:
         contents = f.read()
     new_contents, errors = format_str(
         contents,
@@ -293,21 +303,22 @@ def format_file(
     )
     for error in errors:
         lineno = contents[: error.offset].count("\n") + 1
-        print(f"{filename}:{lineno}: code block parse error {error.exc}")
+        print(f"{file}:{lineno}: code block parse error {error.exc}")
     if errors and not skip_errors:
         return 2
     if contents == new_contents:
         return 0
     if check_only:
-        print(f"{filename}: Requires a rewrite.")
+        print(f"{file}: Requires a rewrite.")
         return 1
-    print(f"{filename}: Rewriting...")
-    with open(filename, "w", encoding="UTF-8") as f:
+    print(f"{file}: Rewriting...")
+    with file.open("w", encoding="UTF-8") as f:
         f.write(new_contents)
     return 1
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """CLI entry-point for ruff docs formatter."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-l",
@@ -351,7 +362,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     retv = 0
     for filename in args.filenames:
         retv |= format_file(
-            filename,
+            Path(filename),
             black_mode,
             skip_errors=args.skip_errors,
             rst_literal_blocks=args.rst_literal_blocks,

@@ -1,3 +1,7 @@
+"""Test cases for ruff docs formatter."""
+
+# ruff: noqa: D103
+
 from __future__ import annotations
 
 from textwrap import dedent
@@ -707,21 +711,9 @@ def test_format_src_rst_indented() -> None:
 
 
 def test_format_src_rst_code_block_indent() -> None:
-    before = "\n".join(
-        [
-            ".. code-block:: python",
-            "   ",
-            "   f(1,2,3)\n",
-        ],
-    )
+    before = ".. code-block:: python\n   \n   f(1,2,3)\n"
     after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
-    assert after == "\n".join(
-        [
-            ".. code-block:: python",
-            "   ",
-            "   f(1, 2, 3)\n",
-        ],
-    )
+    assert after == ".. code-block:: python\n   \n   f(1, 2, 3)\n"
 
 
 def test_format_src_rst_with_highlight_directives() -> None:
@@ -1155,7 +1147,7 @@ def test_format_src_rst_pycon_with_continuation() -> None:
 
 
 def test_format_src_rst_pycon_adds_continuation() -> None:
-    before = ".. code-block:: pycon\n\n" '    >>> d = {"a": 1,"b": 2,"c": 3,}\n' "\n"
+    before = """.. code-block:: pycon\n\n    >>> d = {"a": 1,"b": 2,"c": 3,}\n\n"""
     after, _ = ruff_format_docs.format_str(before, BLACK_MODE)
     assert after == (
         ".. code-block:: pycon\n"
