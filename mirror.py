@@ -1,3 +1,12 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#   "packaging==23.1",
+#   "urllib3==2.0.5",
+# ]
+# ///
+"""Update ruff-pre-commit to the latest version of ruff."""
+
 import re
 import subprocess
 import tomllib
