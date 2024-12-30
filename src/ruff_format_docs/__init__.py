@@ -91,7 +91,7 @@ PYTHONTEX_RE = re.compile(
 )
 INDENT_RE = re.compile("^ +(?=[^ ])", re.MULTILINE)
 TRAILING_NL_RE = re.compile(r"\n+\Z", re.MULTILINE)
-ON_OFF = r"blacken-docs:(on|off)"
+ON_OFF = r"ruff-format-docs:(on|off)"
 ON_OFF_COMMENT_RE = re.compile(
     # Markdown
     rf"(?:^\s*<!-- {ON_OFF} -->$)|"
