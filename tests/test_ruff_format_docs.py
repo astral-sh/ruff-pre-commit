@@ -862,12 +862,11 @@ def test_integration_preview(tmp_path: Path) -> None:
         """)
 
 
-@pytest.mark.xfail(reason="Need to decide how to handle pyi files")
-def test_integration_pyi(tmp_path: Path) -> None:  # pragma: no cover
+def test_integration_pyi(tmp_path: Path) -> None:
     f = tmp_path / "f.md"
     f.write_text(
         dedent("""\
-            ```python
+            ```pyi
             class Foo: ...
 
 
@@ -876,11 +875,11 @@ def test_integration_pyi(tmp_path: Path) -> None:  # pragma: no cover
             """),
     )
 
-    result = main((str(f), "--pyi"))
+    result = main((str(f),))
 
     assert result == 1
     assert f.read_text() == dedent("""\
-        ```python
+        ```pyi
         class Foo: ...
         class Bar: ...
         ```

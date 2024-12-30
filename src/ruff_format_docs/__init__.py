@@ -14,11 +14,8 @@ if TYPE_CHECKING:
     from collections.abc import Generator, Sequence
 
 PYGMENTS_PY_LANGS = frozenset(("python", "py", "sage", "python3", "py3", "numpy"))
-PYGMENTS_PY_LANGS_RE_FRAGMENT = f"({'|'.join(PYGMENTS_PY_LANGS)})"
 MD_RE = re.compile(
-    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*"
-    + PYGMENTS_PY_LANGS_RE_FRAGMENT
-    + r"( .*?)?\n)"
+    r"(?P<before>^(?P<indent> *)```[^\S\r\n]*(?P<lang>\w+)( .*?)?\n)"
     r"(?P<code>.*?)"
     r"(?P<after>^(?P=indent)```[^\S\r\n]*$)",
     re.DOTALL | re.MULTILINE,
@@ -100,14 +97,19 @@ ON_OFF_COMMENT_RE = re.compile(
 )
 
 
-def format_str(code: str, config: FormatterConfig) -> str:
+def format_str(
+    code: str,
+    config: FormatterConfig,
+    is_pyi: bool = False,
+) -> str:
     """Format a code block with ruff."""
+    extension = "pyi" if is_pyi else "py"
     subprocess_result = subprocess.run(
         [
             "ruff",
             "format",
             "--stdin-filename",
-            "file.py",
+            f"file.{extension}",
             *config.call_args,
             "-",
         ],
@@ -172,9 +174,13 @@ def format_file_contents(  # noqa: PLR0915
         if _within_off_range(match.span()):
             return match[0]
 
+        lang = match["lang"]
+        if lang is None or lang not in {*PYGMENTS_PY_LANGS, "pyi"}:
+            return match.group()
+
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, config)
+            code = format_str(code, config, is_pyi=(lang == "pyi"))
 
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
@@ -196,7 +202,7 @@ def format_file_contents(  # noqa: PLR0915
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, config)
+            code = format_str(code, config, is_pyi=(lang == "pyi"))
 
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
