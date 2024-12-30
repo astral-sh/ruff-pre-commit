@@ -40,6 +40,7 @@ repos:
         args: ["--pyi", "--line-length", "130"]
         additional_dependencies:
           - black==24.10.0
+        exclude: tests/test_ruff_format_docs.py
 
   - repo: https://github.com/crate-ci/typos
     rev: v1.28.4
