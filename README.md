@@ -11,7 +11,7 @@ A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/astra
 Distributed as a standalone repository to enable installing Ruff via prebuilt wheels from
 [PyPI](https://pypi.org/project/ruff/).
 
-### Using Ruff with pre-commit
+## Using Ruff with pre-commit
 
 To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https://docs.astral.sh/ruff/formatter)
 (available as of Ruff v0.0.289) via pre-commit, add the following to your `.pre-commit-config.yaml`:
@@ -85,6 +85,6 @@ dually licensed as above, without any additional terms or conditions.
 
 <div align="center">
   <a target="_blank" href="https://astral.sh" style="background:none">
-    <img src="https://raw.githubusercontent.com/astral-sh/ruff/main/assets/svg/Astral.svg">
+    <img src="https://raw.githubusercontent.com/astral-sh/ruff/main/assets/svg/Astral.svg" alt="Made by Astral">
   </a>
 </div>
