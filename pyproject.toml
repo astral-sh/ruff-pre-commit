@@ -10,3 +10,59 @@ dependencies = [
 lint = [
     "pre-commit==4.0.1",
 ]
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle (error)
+    "W", # pycodestyle (warning)
+    "I", # isort
+    "N", # pep8-naming
+    "D", # pydocstyle
+    "UP", # pyupgrade
+    "BLE", # flake8-blind-except
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "COM", # flake8-commas
+    "C4", # flake8-comprehensions
+    "ISC", # flake8-implicit-str-concat
+    "INP", # flake8-import-conventions
+    "PIE", # flake8-pie
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "TD", # flake8-todos
+    "ERA", # eradicate
+    "PGH", # pygrep-hooks
+    "PL", # pylint
+    "TRY", # tryceratops
+    "FLY", # flynt
+    "PERF", # perflint
+    "FURB", # refurb
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "PLR2004", # Ignore consider replacing magic number with constant variable
+    "TRY003", # Not relevant if only using python inbuilt exceptions
+    "S101", # Allow use of assert
+]
+unfixable = [
+    "ERA001", # Disable automatic removal of commented-out code
+    "F401", # Disable automatic removal of unused imports
+    "F841", # Disable automatic removal of unused variables
+]
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
