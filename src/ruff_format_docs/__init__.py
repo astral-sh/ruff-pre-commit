@@ -131,6 +131,7 @@ def format_file_contents(  # noqa: PLR0915
         elif off_start is not None:
             off_ranges.append((off_start, comment.end()))
             off_start = None
+
     if off_start is not None:
         off_ranges.append((off_start, len(src)))
 
@@ -140,6 +141,7 @@ def format_file_contents(  # noqa: PLR0915
             off_start, off_end = off_ranges[index - 1]
         except IndexError:
             return False
+
         code_start, code_end = code_range
         return code_start >= off_start and code_end <= off_end
 
@@ -153,20 +155,25 @@ def format_file_contents(  # noqa: PLR0915
     def _md_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = format_str(code, mode=config)
+
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
     def _rst_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         lang = match["lang"]
         if lang is not None and lang not in PYGMENTS_PY_LANGS:
             return match[0]
+
         if not match["code"].strip():
             return match[0]
+
         min_indent = min(INDENT_RE.findall(match["code"]))
         trailing_ws_match = TRAILING_NL_RE.search(match["code"])
         assert trailing_ws_match
@@ -174,14 +181,17 @@ def format_file_contents(  # noqa: PLR0915
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = format_str(code, mode=config)
+
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
     def _rst_literal_blocks_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         if not match["code"].strip():
             return match[0]
+
         min_indent = min(INDENT_RE.findall(match["code"]))
         trailing_ws_match = TRAILING_NL_RE.search(match["code"])
         assert trailing_ws_match
@@ -189,6 +199,7 @@ def format_file_contents(  # noqa: PLR0915
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = format_str(code, mode=config)
+
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
 
@@ -203,6 +214,7 @@ def format_file_contents(  # noqa: PLR0915
             if fragment is not None:
                 with _collect_error(match):
                     fragment = format_str(fragment, mode=config)
+
                 fragment_lines = fragment.splitlines()
                 code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
                 for line in fragment_lines[1:]:
@@ -216,8 +228,10 @@ def format_file_contents(  # noqa: PLR0915
                     # ...
                     if line:
                         code += f"{PYCON_CONTINUATION_PREFIX} {line}\n"
+
                 if fragment_lines[-1].startswith(" "):
                     code += f"{PYCON_CONTINUATION_PREFIX}\n"
+
                 fragment = None
 
         indentation: int | None = None
@@ -226,6 +240,7 @@ def format_file_contents(  # noqa: PLR0915
             line = line.lstrip()  # noqa: PLW2901
             if indentation is None and line:
                 indentation = len(orig_line) - len(line)
+
             continuation_match = PYCON_CONTINUATION_RE.match(line)
             if continuation_match and fragment is not None:
                 fragment += line[continuation_match.end() :] + "\n"
@@ -235,12 +250,14 @@ def format_file_contents(  # noqa: PLR0915
                     fragment = line[len(PYCON_PREFIX) :] + "\n"
                 else:
                     code += orig_line[indentation:] + "\n"
+
         finish_fragment()
         return code
 
     def _md_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
@@ -248,9 +265,11 @@ def format_file_contents(  # noqa: PLR0915
     def _rst_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         code = _pycon_match(match)
         if not code.strip():
             return match[0]
+
         min_indent = min(INDENT_RE.findall(match["code"]))
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code}'
@@ -258,15 +277,18 @@ def format_file_contents(  # noqa: PLR0915
     def _latex_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
             code = format_str(code, mode=config)
+
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
 
     def _latex_pycon_match(match: Match[str]) -> str:
         if _within_off_range(match.span()):
             return match[0]
+
         code = _pycon_match(match)
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
@@ -280,6 +302,7 @@ def format_file_contents(  # noqa: PLR0915
             _rst_literal_blocks_match,
             src,
         )
+
     src = LATEX_RE.sub(_latex_match, src)
     src = LATEX_PYCON_RE.sub(_latex_pycon_match, src)
     src = PYTHONTEX_RE.sub(_latex_match, src)
@@ -296,6 +319,7 @@ def format_file(
     """Format a file with ruff."""
     with file.open(encoding="UTF-8") as f:
         contents = f.read()
+
     new_contents, errors = format_file_contents(
         contents,
         black_mode,
@@ -304,16 +328,21 @@ def format_file(
     for error in errors:
         lineno = contents[: error.offset].count("\n") + 1
         print(f"{file}:{lineno}: code block parse error {error.exc}")
+
     if errors and not skip_errors:
         return 2
+
     if contents == new_contents:
         return 0
+
     if check_only:
         print(f"{file}: Requires a rewrite.")
         return 1
+
     print(f"{file}: Rewriting...")
     with file.open("w", encoding="UTF-8") as f:
         f.write(new_contents)
+
     return 1
 
 
@@ -368,4 +397,5 @@ def main(argv: Sequence[str] | None = None) -> int:
             rst_literal_blocks=args.rst_literal_blocks,
             check_only=args.check,
         )
+
     return retv
