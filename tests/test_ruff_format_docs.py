@@ -7,8 +7,6 @@ from __future__ import annotations
 from textwrap import dedent
 from typing import TYPE_CHECKING
 
-import pytest
-
 from ruff_format_docs import FormatterConfig, format_file_contents, main
 
 if TYPE_CHECKING:
@@ -912,58 +910,6 @@ def test_integration_filename_last(tmp_path: Path) -> None:
             *long_long_long_long_long_long,
         ):
             pass
-        ```
-        """)
-
-
-@pytest.mark.xfail(
-    reason="Need to decide if we want to handle multiple target versions",
-)
-def test_integration_multiple_target_version(
-    tmp_path: Path,
-) -> None:  # pragma: no cover
-    f = tmp_path / "f.md"
-    f.write_text(
-        dedent("""\
-            ```python
-            def very_very_long_function_name(
-                very_very_very_very_very_very,
-                very_very_very_very_very_very,
-                *long_long_long_long_long_long
-            ):
-                pass
-            ```
-            """),
-    )
-
-    result = main((str(f),))
-    assert result == 0
-
-    result2 = main(
-        ("--target-version", "py35", "--target-version", "py36", str(f)),
-    )
-    assert result2 == 0
-
-
-@pytest.mark.xfail(reason="Need to if we want to support this")
-def test_integration_skip_string_normalization(
-    tmp_path: Path,
-) -> None:  # pragma: no cover
-    f = tmp_path / "f.md"
-    f.write_text(
-        dedent("""\
-            ```python
-            f('hi')
-            ```
-            """),
-    )
-
-    result = main((str(f), "--skip-string-normalization"))
-
-    assert result == 0
-    assert f.read_text() == dedent("""\
-        ```python
-        f('hi')
         ```
         """)
 
