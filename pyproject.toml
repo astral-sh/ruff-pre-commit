@@ -66,6 +66,7 @@ select = [
     "RSE", # flake8-raise
     "RET", # flake8-return
     "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
     "TC", # flake8-type-checking
     "ARG", # flake8-unused-arguments
     "PTH", # flake8-use-pathlib
@@ -90,6 +91,9 @@ unfixable = [
     "F841", # Disable automatic removal of unused variables
 ]
 
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
 [tool.ruff.lint.flake8-unused-arguments]
 ignore-variadic-names = true
 
@@ -100,6 +104,9 @@ required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.per-file-ignores]
 "!tests/**/*.py" = [
     "PT", # Ignore pytest-specific rules in non-test files
+]
+"__init__.py" = [
+    "D104", # Ignore - "Missing docstring in public package" for init files
 ]
 
 [tool.ruff.lint.pydocstyle]
