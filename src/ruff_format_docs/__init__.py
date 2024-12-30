@@ -8,11 +8,7 @@ import textwrap
 from bisect import bisect
 from pathlib import Path
 from re import Match
-from typing import TYPE_CHECKING
-
-from black import FileMode, Mode
-from black.const import DEFAULT_LINE_LENGTH
-from black.mode import TargetVersion
+from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Sequence
@@ -104,7 +100,7 @@ ON_OFF_COMMENT_RE = re.compile(
 )
 
 
-def format_str(code: str, mode: FileMode) -> str:
+def format_str(code: str, config: FormatterConfig) -> str:
     """Format a code block with ruff."""
     subprocess_result = subprocess.run(
         [
@@ -112,8 +108,7 @@ def format_str(code: str, mode: FileMode) -> str:
             "format",
             "--stdin-filename",
             "file.py",
-            "--config",
-            f"line-length={mode.line_length}",
+            *config.call_args,
             "-",
         ],
         check=True,
@@ -136,8 +131,7 @@ class CodeBlockError:
 
 def format_file_contents(  # noqa: PLR0915
     src: str,
-    config: FileMode,
-    *,
+    config: FormatterConfig,
     rst_literal_blocks: bool = False,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     """Format all code blocks in a file."""
@@ -333,20 +327,16 @@ def format_file_contents(  # noqa: PLR0915
 
 def format_file(
     file: Path,
-    black_mode: FileMode,
     skip_errors: bool,
     rst_literal_blocks: bool,
     check_only: bool,
+    config: FormatterConfig,
 ) -> int:
     """Format a file with ruff."""
     with file.open(encoding="UTF-8") as f:
         contents = f.read()
 
-    new_contents, errors = format_file_contents(
-        contents,
-        black_mode,
-        rst_literal_blocks=rst_literal_blocks,
-    )
+    new_contents, errors = format_file_contents(contents, config, rst_literal_blocks)
     for error in errors:
         lineno = contents[: error.offset].count("\n") + 1
         print(f"{file}:{lineno}: code block parse error {error.exc}")
@@ -368,29 +358,39 @@ def format_file(
     return 1
 
 
+class FormatterConfig(NamedTuple):
+    """Configuration for Ruff formatter."""
+
+    target_version: str
+    preview: bool
+    configs: list[str]
+
+    @property
+    def call_args(self) -> list[str]:
+        """Construct the call arguments for ruff's formatter."""
+        args = ["--target-version", self.target_version]
+        if self.preview:
+            args.append("--preview")
+
+        for config in self.configs:
+            args.extend(["--config", config])
+
+        return args
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry-point for ruff docs formatter."""
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-l",
-        "--line-length",
-        type=int,
-        default=DEFAULT_LINE_LENGTH,
-    )
     parser.add_argument("--preview", action="store_true")
-    parser.add_argument(
-        "-S",
-        "--skip-string-normalization",
-        action="store_true",
-    )
     parser.add_argument(
         "-t",
         "--target-version",
-        action="append",
-        type=lambda v: TargetVersion[v.upper()],
-        default=[],
-        help=f"choices: {[v.name.lower() for v in TargetVersion]}",
-        dest="target_versions",
+        action="store",
+        help=(
+            "The minimum Python version that should be supported. Possible values: "
+            "py37, py38, py39, py310, py311, py312, py313. Default: py39"
+        ),
+        default="py39",
     )
     parser.add_argument("--check", action="store_true")
     parser.add_argument("-E", "--skip-errors", action="store_true")
@@ -398,26 +398,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--rst-literal-blocks",
         action="store_true",
     )
-    parser.add_argument("--pyi", action="store_true")
+    parser.add_argument(
+        "--config",
+        action="append",
+        default=[],
+        help="Config to pass to ruff",
+        dest="configs",
+    )
     parser.add_argument("filenames", nargs="*")
     args = parser.parse_args(argv)
 
-    black_mode = Mode(
-        target_versions=set(args.target_versions),
-        line_length=args.line_length,
-        string_normalization=not args.skip_string_normalization,
-        is_pyi=args.pyi,
+    config = FormatterConfig(
+        target_version=args.target_version,
         preview=args.preview,
+        configs=args.configs,
     )
 
     retv = 0
     for filename in args.filenames:
         retv |= format_file(
             Path(filename),
-            black_mode,
             skip_errors=args.skip_errors,
             rst_literal_blocks=args.rst_literal_blocks,
             check_only=args.check,
+            config=config,
         )
 
     return retv

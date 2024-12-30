@@ -8,17 +8,19 @@ from textwrap import dedent
 from typing import TYPE_CHECKING
 
 import pytest
-from black import FileMode
-from black.const import DEFAULT_LINE_LENGTH
 
-from ruff_format_docs import format_file_contents, main
+from ruff_format_docs import FormatterConfig, format_file_contents, main
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from _pytest.capture import CaptureFixture
 
-FORMATTER_CONFIG = FileMode(line_length=DEFAULT_LINE_LENGTH)
+FORMATTER_CONFIG = FormatterConfig(
+    target_version="py39",
+    preview=False,
+    configs=["line-length=88"],
+)
 
 
 def test_format_src_trivial() -> None:
@@ -810,10 +812,10 @@ def test_integration_line_length(tmp_path: Path) -> None:
             """),
     )
 
-    result = main((str(f), "--line-length=80"))
+    result = main((str(f), "--config", "line-length=80"))
     assert result == 0
 
-    result2 = main((str(f), "--line-length=50"))
+    result2 = main((str(f), "--config", "line-length=50"))
     assert result2 == 1
     assert f.read_text() == dedent("""\
         ```python
@@ -855,7 +857,7 @@ def test_integration_preview(tmp_path: Path) -> None:
     assert result == 1
     assert f.read_text() == dedent("""\
         ```python
-        x = "a" "b"
+        x = "ab"
         ```
         """)
 
