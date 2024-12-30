@@ -180,7 +180,7 @@ def format_file_contents(  # noqa: PLR0915
 
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=config)
+            code = format_str(code, config)
 
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
@@ -202,7 +202,7 @@ def format_file_contents(  # noqa: PLR0915
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=config)
+            code = format_str(code, config)
 
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
@@ -220,7 +220,7 @@ def format_file_contents(  # noqa: PLR0915
         trailing_ws = trailing_ws_match.group()
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=config)
+            code = format_str(code, config)
 
         code = textwrap.indent(code, min_indent)
         return f'{match["before"]}{code.rstrip()}{trailing_ws}'
@@ -235,7 +235,7 @@ def format_file_contents(  # noqa: PLR0915
 
             if fragment is not None:
                 with _collect_error(match):
-                    fragment = format_str(fragment, mode=config)
+                    fragment = format_str(fragment, config)
 
                 fragment_lines = fragment.splitlines()
                 code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
@@ -302,7 +302,7 @@ def format_file_contents(  # noqa: PLR0915
 
         code = textwrap.dedent(match["code"])
         with _collect_error(match):
-            code = format_str(code, mode=config)
+            code = format_str(code, config)
 
         code = textwrap.indent(code, match["indent"])
         return f'{match["before"]}{code}{match["after"]}'
