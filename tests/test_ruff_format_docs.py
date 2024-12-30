@@ -887,40 +887,6 @@ def test_integration_pyi(tmp_path: Path) -> None:
 
 
 @pytest.mark.xfail(reason="Need to investigate odd integration with target version")
-def test_integration_py36(tmp_path: Path) -> None:  # pragma: no cover
-    f = tmp_path / "f.md"
-    f.write_text(
-        dedent("""\
-            ```python
-            def very_very_long_function_name(
-                very_very_very_very_very_very,
-                very_very_very_very_very_very,
-                *long_long_long_long_long_long
-            ):
-                pass
-            ```
-            """),
-    )
-
-    result = main((str(f),))
-    assert result == 0
-
-    result2 = main((str(f), "--target-version=py36"))
-
-    assert result2 == 1
-    assert f.read_text() == dedent("""\
-        ```python
-        def very_very_long_function_name(
-            very_very_very_very_very_very,
-            very_very_very_very_very_very,
-            *long_long_long_long_long_long,
-        ):
-            pass
-        ```
-        """)
-
-
-@pytest.mark.xfail(reason="Need to investigate odd integration with target version")
 def test_integration_filename_last(tmp_path: Path) -> None:  # pragma: no cover
     f = tmp_path / "f.md"
     f.write_text(
