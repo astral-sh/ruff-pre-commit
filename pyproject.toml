@@ -1,7 +1,16 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+]
+
 [project]
 name = "ruff-pre-commit"
 version = "0.0.0"
+description = "Run the Ruff formatter on Python code blocks in documentation files."
+readme = "README.md"
 requires-python = ">=3.9"
+scripts.ruff-format-docs = "ruff_format_docs:main"
 dependencies = [
     "ruff==0.8.4",
 ]
