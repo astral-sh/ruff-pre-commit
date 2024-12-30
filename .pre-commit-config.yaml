@@ -55,6 +55,7 @@ repos:
         additional_dependencies:
           - pytest==8.3.3
           - urllib3==2.0.5
+          - black==24.10.0
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.4

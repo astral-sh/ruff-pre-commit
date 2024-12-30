@@ -5,7 +5,7 @@ from textwrap import dedent
 import black
 from black.const import DEFAULT_LINE_LENGTH
 
-from src import ruff_format_docs
+import ruff_format_docs
 
 BLACK_MODE = black.FileMode(line_length=DEFAULT_LINE_LENGTH)
 
