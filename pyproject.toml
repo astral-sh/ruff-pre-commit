@@ -19,6 +19,22 @@ dependencies = [
 lint = [
     "pre-commit==4.0.1",
 ]
+test = [
+    "pytest==8.3.4",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--no-cov-on-fail", # Do not report coverage if tests fail.
+    "--strict-config", # Any warnings encountered while parsing the `pytest` section of the configuration file raise errors.
+    "--strict-markers", # Require markers to be registered in the `markers` section below
+]
+filterwarnings = [
+    "error", # Convert warnings to errors
+]
+python_files = "test_*.py"
+testpaths = ["tests"]
+xfail_strict = true
 
 [tool.mypy]
 mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
@@ -46,6 +62,7 @@ select = [
     "ISC", # flake8-implicit-str-concat
     "INP", # flake8-import-conventions
     "PIE", # flake8-pie
+    "PT", # flake8-pytest-style
     "RSE", # flake8-raise
     "RET", # flake8-return
     "SIM", # flake8-simplify
@@ -79,6 +96,11 @@ ignore-variadic-names = true
 [tool.ruff.lint.isort]
 combine-as-imports = true
 required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.per-file-ignores]
+"!tests/**/*.py" = [
+    "PT", # Ignore pytest-specific rules in non-test files
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
