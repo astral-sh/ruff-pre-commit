@@ -1,6 +1,136 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+]
+
 [project]
 name = "ruff-pre-commit"
 version = "0.0.0"
+description = "Run the Ruff formatter on Python code blocks in documentation files."
+readme = "README.md"
+requires-python = ">=3.9"
+scripts.ruff-format-docs = "ruff_format_docs:main"
 dependencies = [
     "ruff==0.8.5",
 ]
+
+[dependency-groups]
+lint = [
+    "pre-commit==4.0.1",
+]
+test = [
+    "pytest==8.3.4",
+    "pytest-cov==6.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--no-cov-on-fail", # Do not report coverage if tests fail.
+    "--strict-config", # Any warnings encountered while parsing the `pytest` section of the configuration file raise errors.
+    "--strict-markers", # Require markers to be registered in the `markers` section below
+]
+filterwarnings = [
+    "error", # Convert warnings to errors
+]
+python_files = "test_*.py"
+testpaths = ["tests"]
+xfail_strict = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING",
+]
+fail_under = 100
+omit = ["mirror.py"]
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+    "ruff_format_docs",
+    "tests",
+]
+
+[tool.coverage.paths]
+source = [
+    "src",
+]
+
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
+strict = true
+warn_unreachable = true
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle (error)
+    "W", # pycodestyle (warning)
+    "I", # isort
+    "N", # pep8-naming
+    "D", # pydocstyle
+    "UP", # pyupgrade
+    "ANN", # flake8-annotations
+    "BLE", # flake8-blind-except
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "COM", # flake8-commas
+    "C4", # flake8-comprehensions
+    "ISC", # flake8-implicit-str-concat
+    "INP", # flake8-import-conventions
+    "PIE", # flake8-pie
+    "PT", # flake8-pytest-style
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "TC", # flake8-type-checking
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "TD", # flake8-todos
+    "ERA", # eradicate
+    "PGH", # pygrep-hooks
+    "PL", # pylint
+    "TRY", # tryceratops
+    "FLY", # flynt
+    "PERF", # perflint
+    "FURB", # refurb
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "PLR2004", # Ignore consider replacing magic number with constant variable
+    "TRY003", # Not relevant if only using python inbuilt exceptions
+    "S101", # Allow use of assert
+]
+unfixable = [
+    "ERA001", # Disable automatic removal of commented-out code
+    "F401", # Disable automatic removal of unused imports
+    "F841", # Disable automatic removal of unused variables
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.per-file-ignores]
+"!tests/**/*.py" = [
+    "PT", # Ignore pytest-specific rules in non-test files
+]
+"__init__.py" = [
+    "D104", # Ignore - "Missing docstring in public package" for init files
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

@@ -7,19 +7,27 @@
 # ///
 """Update ruff-pre-commit to the latest version of ruff."""
 
+from __future__ import annotations
+
 import re
 import subprocess
-import tomllib
-import typing
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
+import tomllib
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
-def main():
-    with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
+ROOT_DIR = Path(__file__).parent
+
+
+def main() -> None:
+    """Update ruff-pre-commit to the latest version of ruff."""
+    with (ROOT_DIR / "pyproject.toml").open("rb") as f:
         pyproject = tomllib.load(f)
 
     all_versions = get_all_versions()
@@ -37,6 +45,7 @@ def main():
 
 
 def get_all_versions() -> list[Version]:
+    """Fetch all versions of ruff from pypi."""
     response = urllib3.request("GET", "https://pypi.org/pypi/ruff/json")
     if response.status != 200:
         raise RuntimeError("Failed to fetch versions from pypi")
@@ -45,7 +54,8 @@ def get_all_versions() -> list[Version]:
     return sorted(versions)
 
 
-def get_current_version(pyproject: dict) -> Version:
+def get_current_version(pyproject: dict[str, Any]) -> Version:
+    """Get the current version of ruff from pyproject.toml."""
     requirements = [Requirement(d) for d in pyproject["project"]["dependencies"]]
     requirement = next((r for r in requirements if r.name == "ruff"), None)
     assert requirement is not None, "pyproject.toml does not have ruff requirement"
@@ -58,7 +68,9 @@ def get_current_version(pyproject: dict) -> Version:
     return Version(specifiers[0].version)
 
 
-def process_version(version: Version) -> typing.Sequence[str]:
+def process_version(version: Version) -> Sequence[str]:
+    """Update the version of ruff in pyproject.toml and README.md."""
+
     def replace_pyproject_toml(content: str) -> str:
         return re.sub(r'"ruff==.*"', f'"ruff=={version}"', content)
 
@@ -67,17 +79,16 @@ def process_version(version: Version) -> typing.Sequence[str]:
         return re.sub(r"/ruff/\d+\.\d+\.\d+\.svg", f"/ruff/{version}.svg", content)
 
     paths = {
-        "pyproject.toml": replace_pyproject_toml,
-        "README.md": replace_readme_md,
+        ROOT_DIR / "pyproject.toml": replace_pyproject_toml,
+        ROOT_DIR / "README.md": replace_readme_md,
     }
 
     for path, replacer in paths.items():
-        with open(path) as f:
-            content = replacer(f.read())
-        with open(path, mode="w") as f:
-            f.write(content)
+        content = path.read_text()
+        updated_content = replacer(content)
+        path.write_text(updated_content)
 
-    return tuple(paths.keys())
+    return tuple([str(path) for path in paths])
 
 
 if __name__ == "__main__":

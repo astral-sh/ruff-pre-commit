@@ -19,3 +19,14 @@
   require_serial: true
   additional_dependencies: []
   minimum_pre_commit_version: "2.9.2"
+
+- id: ruff-format-docs
+  name: ruff-format-docs
+  description: Run the Ruff formatter on python code blocks in documentation files
+  entry: ruff-format-docs
+  language: python
+  types_or: [rst, markdown, python, tex]
+  args: []
+  require_serial: true
+  additional_dependencies: []
+  minimum_pre_commit_version: "2.9.2"
