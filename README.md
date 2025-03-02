@@ -22,10 +22,10 @@ repos:
   # Ruff version.
   rev: v0.9.9
   hooks:
-    # Run the linter.
-    - id: ruff
-    # Run the formatter.
-    - id: ruff-format
+  # Run the linter.
+  - id: ruff
+  # Run the formatter.
+  - id: ruff-format
 ```
 
 To enable lint fixes, add the `--fix` argument to the lint hook:
@@ -36,11 +36,11 @@ repos:
   # Ruff version.
   rev: v0.9.9
   hooks:
-    # Run the linter.
-    - id: ruff
-      args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
+  # Run the linter.
+  - id: ruff
+    args: [ --fix ]
+  # Run the formatter.
+  - id: ruff-format
 ```
 
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
@@ -51,13 +51,13 @@ repos:
   # Ruff version.
   rev: v0.9.9
   hooks:
-    # Run the linter.
-    - id: ruff
-      types_or: [ python, pyi ]
-      args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi ]
+  # Run the linter.
+  - id: ruff
+    types_or: [ python, pyi ]
+    args: [ --fix ]
+  # Run the formatter.
+  - id: ruff-format
+    types_or: [ python, pyi ]
 ```
 
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
