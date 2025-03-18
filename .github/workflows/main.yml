@@ -10,6 +10,8 @@ jobs:
   build:
     name: main
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - if: ${{ startsWith(github.event_name, 'repository_dispatch') }}
         run: sleep 30
