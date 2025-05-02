@@ -23,7 +23,7 @@ repos:
   rev: v0.11.8
   hooks:
     # Run the linter.
-    - id: ruff
+    - id: ruff-check
     # Run the formatter.
     - id: ruff-format
 ```
@@ -37,7 +37,7 @@ repos:
   rev: v0.11.8
   hooks:
     # Run the linter.
-    - id: ruff
+    - id: ruff-check
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
@@ -52,7 +52,7 @@ repos:
   rev: v0.11.8
   hooks:
     # Run the linter.
-    - id: ruff
+    - id: ruff-check
       types_or: [ python, pyi ]
       args: [ --fix ]
     # Run the formatter.
