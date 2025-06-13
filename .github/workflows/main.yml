@@ -10,27 +10,23 @@ jobs:
   build:
     name: main
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - if: ${{ startsWith(github.event_name, 'repository_dispatch') }}
         run: sleep 30
 
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: download uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
-      - run: uv pip install --system -r requirements-dev.txt
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: set git config
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - run: python mirror.py
+      - run: uv run --no-project mirror.py
 
       - name: check for unpushed commits
         id: check_unpushed
