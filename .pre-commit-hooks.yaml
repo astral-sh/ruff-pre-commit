@@ -20,6 +20,17 @@
   additional_dependencies: []
   minimum_pre_commit_version: "2.9.2"
 
+- id: ruff-full
+  name: ruff (format + check --fix)
+  description: "Run 'ruff format && ruff check --fix' for extremely fast Python formatting and linting"
+  entry: sh -ec 'ruff check --fix --force-exclude && ruff format --force-exclude'
+  language: python
+  types_or: [python, pyi, jupyter]
+  args: []
+  require_serial: true
+  additional_dependencies: []
+  minimum_pre_commit_version: "2.9.2"
+
 # Legacy alias
 - id: ruff
   name: ruff (legacy alias)
