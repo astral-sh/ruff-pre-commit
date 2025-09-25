@@ -57,7 +57,7 @@ jobs:
           echo $TAG_NAME
           gh release create "$TAG_NAME" \
             --title "$TAG_NAME" \
-            --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME/v}" \
+            --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME}" \
             --latest
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
