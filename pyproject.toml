@@ -2,5 +2,5 @@
 name = "ruff-pre-commit"
 version = "0.0.0"
 dependencies = [
-    "ruff==0.13.3",
+    "ruff==0.14.0",
 ]
