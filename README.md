@@ -70,6 +70,27 @@ When running without `--fix`, Ruff's formatter hook can be placed before or afte
 `ruff format` should never introduce new lint errors, so it's safe to run Ruff's format hook _after_
 `ruff check --fix`.)
 
+### Using Ruff with prek
+
+If you prefer using [prek](https://github.com/j178/prek) instead of
+pre-commit, you can define a `prek.toml` file with your hooks. Here's an example
+equivalent to the `.pre-commit-config.yaml` configuration:
+
+```toml
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.0" # Ruff version.
+hooks = [
+  # Run the linter.
+  { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
+
+  # Run the formatter.
+  { id = "ruff-format", types_or = ["python", "pyi"] },
+]
+```
+
+See the section above on pre-commit for guidance on hook order when using `--fix`.
+
 ## License
 
 ruff-pre-commit is licensed under either of
