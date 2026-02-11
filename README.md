@@ -87,7 +87,7 @@ hooks = [
 ]
 ```
 
-> Note: If using `--fix`, see the section above on pre-commit for guidance on hook order.
+See the section above on pre-commit for guidance on hook order when using `--fix`.
 
 ## License
 
