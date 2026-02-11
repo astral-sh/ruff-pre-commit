@@ -72,7 +72,9 @@ When running without `--fix`, Ruff's formatter hook can be placed before or afte
 
 ### Using Ruff with prek
 
-If you prefer using [prek](https://github.com/pre-commit/prek) instead of pre-commit, you can define a `prek.toml` file with your hooks. Here's an example equivalent to the `.pre-commit-config.yaml` configuration:
+If you prefer using [prek](https://github.com/j178/prek) instead of
+pre-commit, you can define a `prek.toml` file with your hooks. Here's an example
+equivalent to the `.pre-commit-config.yaml` configuration:
 
 ```toml
 [[repos]]
