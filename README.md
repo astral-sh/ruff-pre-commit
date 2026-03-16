@@ -43,6 +43,9 @@ repos:
     - id: ruff-format
 ```
 
+By default, `ruff-check` applies to Python files, stub files, Jupyter Notebooks, and `pyproject.toml`.
+`ruff-format` applies to Python files, stub files, and Jupyter Notebooks.
+
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
 
 ```yaml
@@ -53,7 +56,7 @@ repos:
   hooks:
     # Run the linter.
     - id: ruff-check
-      types_or: [ python, pyi ]
+      types_or: [ python, pyi, pyproject ]
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
@@ -82,10 +85,10 @@ repo = "https://github.com/astral-sh/ruff-pre-commit"
 rev = "v0.15.0" # Ruff version.
 hooks = [
   # Run the linter.
-  { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
+  { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi", "jupyter", "pyproject"] },
 
   # Run the formatter.
-  { id = "ruff-format", types_or = ["python", "pyi"] },
+  { id = "ruff-format", types_or = ["python", "pyi", "jupyter"] },
 ]
 ```
 
