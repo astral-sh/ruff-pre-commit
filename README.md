@@ -66,7 +66,7 @@ To lint `pyproject.toml`, add `pyproject` to the list of allowed filetypes (requ
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.15.6
+  rev: v0.15.7
   hooks:
     # Run the linter.
     - id: ruff-check
