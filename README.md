@@ -60,6 +60,23 @@ repos:
       types_or: [ python, pyi ]
 ```
 
+To lint `pyproject.toml`, add `pyproject` to the list of allowed filetypes (requires `identify>=2.6.18`):
+
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.15.7
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      types_or: [ python, pyi, jupyter, pyproject ]
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter ]
+```
+
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
 _before_ Black, isort, and other formatting tools, as Ruff's fix behavior can output code changes
 that require reformatting.
