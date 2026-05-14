@@ -43,6 +43,20 @@ repos:
     - id: ruff-format
 ```
 
+To select or ignore specific rules, pass the relevant Ruff arguments through `args`.
+When using inline YAML lists, quote arguments that contain commas:
+
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.15.13
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      args: [ --fix, "--extend-select=I,E", "--ignore=F401" ]
+```
+
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
 
 ```yaml
