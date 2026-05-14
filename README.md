@@ -50,7 +50,7 @@ When using inline YAML lists, quote arguments that contain commas:
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.15.12
+  rev: v0.15.13
   hooks:
     # Run the linter.
     - id: ruff-check
