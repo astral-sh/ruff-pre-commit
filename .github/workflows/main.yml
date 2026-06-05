@@ -53,11 +53,12 @@ jobs:
       - name: create release on new tag if new changes exist
         if: env.changes_exist == 'true'
         run: |
-          TAG_NAME=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo $TAG_NAME
-          gh release create "$TAG_NAME" \
-            --title "$TAG_NAME" \
-            --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME/v}" \
-            --latest
+          for TAG_NAME in $(git log --reverse --format=%H origin/main..HEAD | xargs -r -n1 git tag --points-at); do
+            echo "$TAG_NAME"
+            gh release create "$TAG_NAME" \
+              --title "$TAG_NAME" \
+              --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME/v}" \
+              --latest
+          done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
