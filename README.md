@@ -110,7 +110,7 @@ equivalent to the `.pre-commit-config.yaml` configuration:
 ```toml
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.0" # Ruff version.
+rev = "v0.15.18" # Ruff version.
 hooks = [
   # Run the linter.
   { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },

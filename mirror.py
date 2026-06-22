@@ -64,6 +64,7 @@ def process_version(version: Version) -> typing.Sequence[str]:
 
     def replace_readme_md(content: str) -> str:
         content = re.sub(r"rev: v\d+\.\d+\.\d+", f"rev: v{version}", content)
+        content = re.sub(r'rev = "v\d+\.\d+\.\d+"', f'rev = "v{version}"', content)
         return re.sub(r"/ruff/\d+\.\d+\.\d+\.svg", f"/ruff/{version}.svg", content)
 
     paths = {
