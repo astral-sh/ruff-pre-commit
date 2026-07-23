@@ -4,3 +4,34 @@ version = "0.0.0"
 dependencies = [
     "ruff==0.16.0",
 ]
+
+[dependency-groups]
+dev = [
+    "repo-release-tools>=1.10.1",
+]
+
+[tool.rrt]
+release_branch = "main"
+lock_command = []
+
+[tool.rrt.upstream]
+package = "ruff"
+provider = "pypi"
+commit_message = "Mirror: {version}"
+
+[[tool.rrt.version_targets]]
+path = "pyproject.toml"
+kind = "pattern"
+pattern = 'ruff==(\d+\.\d+\.\d+)'
+
+[[tool.rrt.pin_targets]]
+path = "README.md"
+pattern = '(rev: v)(\d+\.\d+\.\d+)()'
+
+[[tool.rrt.pin_targets]]
+path = "README.md"
+pattern = '(rev = "v)(\d+\.\d+\.\d+)(")'
+
+[[tool.rrt.pin_targets]]
+path = "README.md"
+pattern = '(/ruff/)(\d+\.\d+\.\d+)(\.svg)'
