@@ -37,6 +37,14 @@ jobs:
           else
             echo "Unpushed commits found."
             echo "changes_exist=true" >> "$GITHUB_ENV"
+            {
+              echo "tags<<EOF"
+              git rev-list --reverse origin/main..HEAD |
+                while IFS= read -r commit; do
+                  git tag --points-at "$commit"
+                done
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
           fi
 
       - name: push changes if they exist
@@ -45,14 +53,27 @@ jobs:
           git push origin HEAD:refs/heads/main
           git push origin HEAD:refs/heads/main --tags
 
-      - name: create release on new tag if new changes exist
+      - name: create releases for new tags
         if: env.changes_exist == 'true'
         run: |
-          TAG_NAME=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-          echo "$TAG_NAME"
-          gh release create "$TAG_NAME" \
-            --title "$TAG_NAME" \
-            --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME/v}" \
-            --latest
+          latest_tag=$(printf '%s\n' "$NEW_TAGS" | tail -n 1)
+
+          while IFS= read -r tag_name; do
+            if [ -z "$tag_name" ]; then
+              continue
+            fi
+
+            latest_flag="--latest=false"
+            if [ "$tag_name" = "$latest_tag" ]; then
+              latest_flag="--latest"
+            fi
+
+            gh release create "$tag_name" \
+              --title "$tag_name" \
+              --notes "See: https://github.com/astral-sh/ruff/releases/tag/${tag_name#v}" \
+              --verify-tag \
+              "$latest_flag"
+          done <<< "$NEW_TAGS"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAGS: ${{ steps.check_unpushed.outputs.tags }}
