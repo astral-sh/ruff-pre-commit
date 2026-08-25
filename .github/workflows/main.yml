@@ -3,8 +3,6 @@ on:
   schedule:
     - cron: "0 */4 * * *"
   workflow_dispatch:
-  repository_dispatch:
-    types: [pypi_release]
 
 permissions: {}
 
@@ -15,15 +13,12 @@ jobs:
     permissions:
       contents: write
     steps:
-      - if: ${{ startsWith(github.event_name, 'repository_dispatch') }}
-        run: sleep 30
-
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: true # needed to push commits below
 
       - name: Install uv
-        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
       - name: set git config
         run: |
@@ -38,10 +33,10 @@ jobs:
           UNPUSHED_COMMITS=$(git log origin/main..HEAD)
           if [ -z "$UNPUSHED_COMMITS" ]; then
             echo "No unpushed commits found."
-            echo "changes_exist=false" >> $GITHUB_ENV
+            echo "changes_exist=false" >> "$GITHUB_ENV"
           else
             echo "Unpushed commits found."
-            echo "changes_exist=true" >> $GITHUB_ENV
+            echo "changes_exist=true" >> "$GITHUB_ENV"
           fi
 
       - name: push changes if they exist
@@ -53,8 +48,8 @@ jobs:
       - name: create release on new tag if new changes exist
         if: env.changes_exist == 'true'
         run: |
-          TAG_NAME=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo $TAG_NAME
+          TAG_NAME=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          echo "$TAG_NAME"
           gh release create "$TAG_NAME" \
             --title "$TAG_NAME" \
             --notes "See: https://github.com/astral-sh/ruff/releases/tag/${TAG_NAME/v}" \

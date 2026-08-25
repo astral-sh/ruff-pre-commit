@@ -1,9 +1,9 @@
 # ruff-pre-commit
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![image](https://img.shields.io/pypi/v/ruff/0.15.5.svg)](https://pypi.python.org/pypi/ruff)
-[![image](https://img.shields.io/pypi/l/ruff/0.15.5.svg)](https://pypi.python.org/pypi/ruff)
-[![image](https://img.shields.io/pypi/pyversions/ruff/0.15.5.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/v/ruff/0.16.4.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/l/ruff/0.16.4.svg)](https://pypi.python.org/pypi/ruff)
+[![image](https://img.shields.io/pypi/pyversions/ruff/0.16.4.svg)](https://pypi.python.org/pypi/ruff)
 [![Actions status](https://github.com/astral-sh/ruff-pre-commit/workflows/main/badge.svg)](https://github.com/astral-sh/ruff-pre-commit/actions)
 
 A [pre-commit](https://pre-commit.com/) hook for [Ruff](https://github.com/astral-sh/ruff).
@@ -20,7 +20,7 @@ To run Ruff's [linter](https://docs.astral.sh/ruff/linter) and [formatter](https
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.15.5
+  rev: v0.16.4
   hooks:
     # Run the linter.
     - id: ruff-check
@@ -34,7 +34,7 @@ To enable lint fixes, add the `--fix` argument to the lint hook:
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.15.5
+  rev: v0.16.4
   hooks:
     # Run the linter.
     - id: ruff-check
@@ -43,13 +43,27 @@ repos:
     - id: ruff-format
 ```
 
+To select or ignore specific rules, pass the relevant Ruff arguments through `args`.
+When using inline YAML lists, quote arguments that contain commas:
+
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.16.4
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      args: [ --fix, "--extend-select=I,E", "--ignore=F401" ]
+```
+
 To avoid running on Jupyter Notebooks, remove `jupyter` from the list of allowed filetypes:
 
 ```yaml
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.15.5
+  rev: v0.16.4
   hooks:
     # Run the linter.
     - id: ruff-check
@@ -58,6 +72,23 @@ repos:
     # Run the formatter.
     - id: ruff-format
       types_or: [ python, pyi ]
+```
+
+To lint `pyproject.toml`, add `pyproject` to the list of allowed filetypes (requires `identify>=2.6.18`):
+
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.16.4
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      types_or: [ python, pyi, jupyter, pyproject ]
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter ]
 ```
 
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
@@ -79,7 +110,7 @@ equivalent to the `.pre-commit-config.yaml` configuration:
 ```toml
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.0" # Ruff version.
+rev = "v0.16.4" # Ruff version.
 hooks = [
   # Run the linter.
   { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
