@@ -28,6 +28,8 @@ repos:
     - id: ruff-format
 ```
 
+By default, the format hook also formats [Python code blocks in Markdown files](https://docs.astral.sh/ruff/formatter/#markdown-code-formatting).
+
 To enable lint fixes, add the `--fix` argument to the lint hook:
 
 ```yaml
@@ -71,7 +73,7 @@ repos:
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
-      types_or: [ python, pyi ]
+      types_or: [ python, pyi, markdown ]
 ```
 
 To lint `pyproject.toml`, add `pyproject` to the list of allowed filetypes (requires `identify>=2.6.18`):
@@ -88,7 +90,7 @@ repos:
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
-      types_or: [ python, pyi, jupyter ]
+      types_or: [ python, pyi, jupyter, markdown ]
 ```
 
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
@@ -116,7 +118,7 @@ hooks = [
   { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
 
   # Run the formatter.
-  { id = "ruff-format", types_or = ["python", "pyi"] },
+  { id = "ruff-format", types_or = ["python", "pyi", "markdown"] },
 ]
 ```
 
