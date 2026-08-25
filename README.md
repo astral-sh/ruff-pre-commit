@@ -28,7 +28,7 @@ repos:
     - id: ruff-format
 ```
 
-The format hook also formats [Python code blocks in Markdown files](https://docs.astral.sh/ruff/formatter/#markdown-code-formatting).
+By default, the format hook also formats [Python code blocks in Markdown files](https://docs.astral.sh/ruff/formatter/#markdown-code-formatting).
 
 To enable lint fixes, add the `--fix` argument to the lint hook:
 
