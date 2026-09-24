@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "repositories": {
+    "ruff-pre-commit": {
+      "name": "astral-sh/ruff-pre-commit",
+      "id": 538784618,
+      "oidc_subject": "legacy"
+    },
+    "ruff": {
+      "name": "astral-sh/ruff",
+      "id": 523043277,
+      "oidc_subject": "legacy"
+    }
+  },
+  "rules": [
+    {
+      "caller": "ruff",
+      "environment": "release",
+      "caller_workflow": "release.yml",
+      "reusable_workflow": "notify-dependents.yml",
+      "on": ["workflow_dispatch"],
+      "permissions": { "actions": "write" },
+      "target": "ruff-pre-commit"
+    }
+  ]
+}
