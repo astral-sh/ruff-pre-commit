@@ -93,6 +93,22 @@ repos:
       types_or: [ python, pyi, jupyter, markdown ]
 ```
 
+To format Python code blocks in Quarto documents that use the `.qmd` extension,
+[configure Ruff](https://docs.astral.sh/ruff/settings/#extension) to map the `qmd` extension to
+the `markdown` file type, and add `quarto` to the list of allowed file types in your
+`.pre-commit-config.yaml` configuration (requires `identify>=2.6.20`):
+
+```yaml
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.16.9
+  hooks:
+    # Run the formatter.
+    - id: ruff-format
+      types_or: [ python, pyi, jupyter, markdown, quarto ]
+```
+
 When running with `--fix`, Ruff's lint hook should be placed _before_ Ruff's formatter hook, and
 _before_ Black, isort, and other formatting tools, as Ruff's fix behavior can output code changes
 that require reformatting.
