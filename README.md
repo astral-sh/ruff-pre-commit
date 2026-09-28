@@ -93,7 +93,7 @@ repos:
       types_or: [ python, pyi, jupyter, markdown ]
 ```
 
-To format Python code blocks in Quarto documents that use the `.qmd` extension, add `quarto` to the list of allowed filetypes (requires `identify>=2.6.20`:
+To format Python code blocks in Quarto documents that use the `.qmd` extension, add `quarto` to the list of allowed filetypes (requires `identify>=2.6.20`):
 
 ```yaml
 repos:
