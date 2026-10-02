@@ -36,12 +36,23 @@ def main():
             print(f"No change v{version}")
 
 
+def is_yanked(files: list[dict]) -> bool:
+    """A release is treated as yanked once every one of its files is yanked."""
+    return bool(files) and all(file.get("yanked") for file in files)
+
+
 def get_all_versions() -> list[Version]:
     response = urllib3.request("GET", "https://pypi.org/pypi/ruff/json")
     if response.status != 200:
         raise RuntimeError("Failed to fetch versions from pypi")
 
-    versions = [Version(release) for release in response.json()["releases"]]
+    # Skip releases that PyPI has yanked. A yank is the signal that a release
+    # should not be installed, so mirroring one publishes a tag, a GitHub
+    # release, and a `rev` pointing at a version users are meant to avoid.
+    releases = response.json()["releases"]
+    versions = [
+        Version(release) for release, files in releases.items() if not is_yanked(files)
+    ]
     return sorted(versions)
 
 
