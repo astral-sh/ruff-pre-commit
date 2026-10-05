@@ -1,0 +1,5 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["github>astral-sh/renovate-config"],
+  enabledManagers: ["custom.regex"],
+}
