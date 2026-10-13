@@ -4,6 +4,10 @@
 #   "packaging==23.1",
 #   "urllib3==2.0.5",
 # ]
+#
+# [tool.uv]
+# require-build-hashes = true
+# preview-features = ["build-dependency-hashes"]
 # ///
 """Update ruff-pre-commit to the latest version of ruff."""
 
