@@ -1,6 +1,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
+#   "certifi==2026.10.19",
 #   "packaging==23.1",
 #   "urllib3==2.0.5",
 # ]
@@ -13,6 +14,7 @@ import tomllib
 import typing
 from pathlib import Path
 
+import certifi
 import urllib3
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -37,7 +39,8 @@ def main():
 
 
 def get_all_versions() -> list[Version]:
-    response = urllib3.request("GET", "https://pypi.org/pypi/ruff/json")
+    http = urllib3.PoolManager(ca_certs=certifi.where())
+    response = http.request("GET", "https://pypi.org/pypi/ruff/json")
     if response.status != 200:
         raise RuntimeError("Failed to fetch versions from pypi")
 
