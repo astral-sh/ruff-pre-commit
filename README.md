@@ -90,7 +90,6 @@ repos:
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
-      types_or: [ python, pyi, jupyter, markdown ]
 ```
 
 To format Python code blocks in Quarto documents that use the `.qmd` extension,
