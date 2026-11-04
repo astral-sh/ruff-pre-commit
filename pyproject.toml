@@ -4,3 +4,41 @@ version = "0.0.0"
 dependencies = [
     "ruff==0.17.3",
 ]
+
+[tool.uv]
+require-build-hashes = true
+preview-features = ["build-dependency-hashes"]
+build-constraint-dependencies = [
+    { requirement = "packaging==26.3 ; python_full_version >= '3.9'", hashes = [
+        "sha256:94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79",
+        "sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+    ] },
+    { requirement = "setuptools==68.0.0 ; python_full_version < '3.8'", hashes = [
+        "sha256:11e52c67415a381d10d6b462ced9cfb97066179f0e871399e006c4ab101fc85f",
+        "sha256:baf1fdb41c6da4cd2eae722e135500da913332ab3f2f5c7d33af9b492acb5235",
+    ] },
+    { requirement = "setuptools==75.3.4 ; python_full_version == '3.8.*'", hashes = [
+        "sha256:2dd50a7f42dddfa1d02a36f275dbe716f38ed250224f609d35fb60a09593d93e",
+        "sha256:b4ea3f76e1633c4d2d422a5d68ab35fd35402ad71e6acaa5d7e5956eb47e8887",
+    ] },
+    { requirement = "setuptools==82.0.1 ; python_full_version == '3.9.*'", hashes = [
+        "sha256:7d872682c5d01cfde07da7bccc7b65469d3dca203318515ada1de5eda35efbf9",
+        "sha256:a59e362652f08dcd477c78bb6e7bd9d80a7995bc73ce773050228a348ce2e5bb",
+    ] },
+    { requirement = "setuptools==84.0.0 ; python_full_version >= '3.10'", hashes = [
+        "sha256:51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670",
+        "sha256:f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73",
+    ] },
+    { requirement = "wheel==0.42.0 ; python_full_version < '3.8'", hashes = [
+        "sha256:177f9c9b0d45c47873b619f5b650346d632cdc35fb5e4d25058e09c9e581433d",
+        "sha256:c45be39f7882c9d34243236f2d63cbd58039e360f85d0913425fbd7ceea617a8",
+    ] },
+    { requirement = "wheel==0.45.1 ; python_full_version == '3.8.*'", hashes = [
+        "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729",
+        "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+    ] },
+    { requirement = "wheel==0.48.0 ; python_full_version >= '3.9'", hashes = [
+        "sha256:3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab",
+        "sha256:94800765601e9171bf5d58d066e640662842bcedcbab982b2c90787a2c987322",
+    ] },
+]
